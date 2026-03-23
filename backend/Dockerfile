@@ -19,7 +19,6 @@ RUN pip install --no-cache-dir --upgrade pip \
 COPY src/ ./src/
 COPY alembic/ ./alembic/
 COPY alembic.ini ./
-COPY scripts/ ./scripts/
 
 # Create a non-root user and hand ownership over
 RUN useradd --create-home --shell /bin/bash appuser \
