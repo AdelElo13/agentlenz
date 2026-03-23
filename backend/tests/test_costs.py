@@ -1,6 +1,6 @@
 import uuid
 import pytest
-from agentlens_api.models import Event
+from agentfinops_api.models import Event
 from tests.conftest import TEST_API_KEY
 
 
@@ -24,7 +24,7 @@ async def _seed_events(db, project_id: uuid.UUID):
 @pytest.mark.asyncio
 async def test_get_costs(client, db):
     from sqlalchemy import select
-    from agentlens_api.models import ApiKey
+    from agentfinops_api.models import ApiKey
     result = await db.execute(select(ApiKey))
     api_key = result.scalar_one()
     await _seed_events(db, api_key.project_id)

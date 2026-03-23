@@ -1,4 +1,4 @@
-"""HTTP client that batches and sends span events to the AgentLens backend."""
+"""HTTP client that batches and sends span events to the AgentFinOps backend."""
 
 from __future__ import annotations
 
@@ -9,10 +9,10 @@ from collections import deque
 
 import httpx
 
-from agentlens.config import get_config
-from agentlens.spans import Span
+from agentfinops.config import get_config
+from agentfinops.spans import Span
 
-logger = logging.getLogger("agentlens")
+logger = logging.getLogger("agentfinops")
 
 _client: EventClient | None = None
 _lock = threading.Lock()
@@ -56,7 +56,7 @@ class EventClient:
                 timeout=10.0,
             )
         except Exception:
-            logger.warning("AgentLens: failed to send %d events", len(batch), exc_info=True)
+            logger.warning("AgentFinOps: failed to send %d events", len(batch), exc_info=True)
 
     def _get_http(self) -> httpx.Client:
         if self._http is None:

@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from typing import Any
 
-from agentlens.client import get_client
-from agentlens.spans import Span, SpanKind
+from agentfinops.client import get_client
+from agentfinops.spans import Span, SpanKind
 
 
 class WrappedMessages:

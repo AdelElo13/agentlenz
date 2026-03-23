@@ -8,9 +8,9 @@ from datetime import datetime, timedelta, timezone
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from agentlens_api.models import Event
-from agentlens_api.schemas import WasteItem, WasteResponse
-from agentlens_api.services.pricing import MODEL_PRICING
+from agentfinops_api.models import Event
+from agentfinops_api.schemas import WasteItem, WasteResponse
+from agentfinops_api.services.pricing import MODEL_PRICING
 
 EXPENSIVE_MODELS = {
     "claude-opus-4-20250514": "claude-haiku-4-5-20251001",

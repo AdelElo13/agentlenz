@@ -7,10 +7,10 @@ import uuid
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from agentlens_api.auth import get_project_id
-from agentlens_api.db import get_db
-from agentlens_api.schemas import CostResponse
-from agentlens_api.services.cost_engine import get_cost_breakdown
+from agentfinops_api.auth import get_project_id
+from agentfinops_api.db import get_db
+from agentfinops_api.schemas import CostResponse
+from agentfinops_api.services.cost_engine import get_cost_breakdown
 
 router = APIRouter()
 

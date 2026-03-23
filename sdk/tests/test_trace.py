@@ -1,16 +1,16 @@
 import pytest
 from unittest.mock import patch, MagicMock
-from agentlens.config import init
-from agentlens.trace import trace
+from agentfinops.config import init
+from agentfinops.trace import trace
 
 
 @pytest.fixture(autouse=True)
 def setup():
-    init(api_key="al_test123", endpoint="http://localhost:8000")
+    init(api_key="af_test123", endpoint="http://localhost:8000")
 
 
 def test_trace_decorator_records_span():
-    with patch("agentlens.trace.get_client") as mock_get_client:
+    with patch("agentfinops.trace.get_client") as mock_get_client:
         mock_event_client = MagicMock()
         mock_get_client.return_value = mock_event_client
 
@@ -27,7 +27,7 @@ def test_trace_decorator_records_span():
 
 
 def test_trace_decorator_records_error():
-    with patch("agentlens.trace.get_client") as mock_get_client:
+    with patch("agentfinops.trace.get_client") as mock_get_client:
         mock_event_client = MagicMock()
         mock_get_client.return_value = mock_event_client
 
@@ -43,7 +43,7 @@ def test_trace_decorator_records_error():
 
 
 def test_trace_decorator_default_name():
-    with patch("agentlens.trace.get_client") as mock_get_client:
+    with patch("agentfinops.trace.get_client") as mock_get_client:
         mock_event_client = MagicMock()
         mock_get_client.return_value = mock_event_client
 

@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_asyn
 
 DATABASE_URL = os.environ.get(
     "DATABASE_URL",
-    "postgresql+asyncpg://postgres:postgres@localhost:5432/agentlens",
+    "postgresql+asyncpg://postgres:postgres@localhost:5432/agentfinops",
 )
 
 engine = create_async_engine(DATABASE_URL, echo=False)

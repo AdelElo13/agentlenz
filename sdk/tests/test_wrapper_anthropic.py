@@ -1,12 +1,12 @@
 import pytest
 from unittest.mock import MagicMock, patch
-from agentlens.config import init
-from agentlens.wrappers.anthropic import wrap_anthropic
+from agentfinops.config import init
+from agentfinops.wrappers.anthropic import wrap_anthropic
 
 
 @pytest.fixture(autouse=True)
 def setup():
-    init(api_key="al_test123", endpoint="http://localhost:8000")
+    init(api_key="af_test123", endpoint="http://localhost:8000")
 
 
 def test_wrap_anthropic_returns_wrapper():
@@ -25,7 +25,7 @@ def test_wrapped_messages_create_records_span():
 
     wrapped = wrap_anthropic(mock_client)
 
-    with patch("agentlens.wrappers.anthropic.get_client") as mock_get_client:
+    with patch("agentfinops.wrappers.anthropic.get_client") as mock_get_client:
         mock_event_client = MagicMock()
         mock_get_client.return_value = mock_event_client
 
@@ -50,7 +50,7 @@ def test_wrapped_messages_create_records_error():
 
     wrapped = wrap_anthropic(mock_client)
 
-    with patch("agentlens.wrappers.anthropic.get_client") as mock_get_client:
+    with patch("agentfinops.wrappers.anthropic.get_client") as mock_get_client:
         mock_event_client = MagicMock()
         mock_get_client.return_value = mock_event_client
 

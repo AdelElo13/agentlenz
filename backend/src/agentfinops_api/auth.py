@@ -10,8 +10,8 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from agentlens_api.db import get_db
-from agentlens_api.models import ApiKey
+from agentfinops_api.db import get_db
+from agentfinops_api.models import ApiKey
 
 security = HTTPBearer()
 

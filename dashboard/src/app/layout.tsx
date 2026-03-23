@@ -6,7 +6,7 @@ import { Nav } from "@/components/nav";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "AgentLens",
+  title: "AgentFinOps",
   description: "AI agent cost optimization dashboard",
 };
 

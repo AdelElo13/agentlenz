@@ -30,7 +30,7 @@ Have open: a notes doc, their Twitter/LinkedIn profile, any tweets or posts you 
 
 > "Hey [name], really appreciate you taking the time. I'll be quick about what I'm building, and then I want to spend most of this call understanding your situation — so I'll flip it to you pretty fast.
 >
-> Two sentences on AgentLens: it's an AI agent cost optimization platform. The core problem I'm solving is that engineering teams running LLM workloads often have no visibility into where the money is actually going — which agents, which prompts, which calls — and no real levers to control it without tearing apart the architecture.
+> Two sentences on AgentFinOps: it's an AI agent cost optimization platform. The core problem I'm solving is that engineering teams running LLM workloads often have no visibility into where the money is actually going — which agents, which prompts, which calls — and no real levers to control it without tearing apart the architecture.
 >
 > I'm at an early stage — still validating the problem before I build too much. That's exactly why I'm talking to people like you.
 >
@@ -92,9 +92,9 @@ Have open: a notes doc, their Twitter/LinkedIn profile, any tweets or posts you 
 
 > "Here's the deal as clearly as I can state it:
 >
-> You get: 70% off AgentLens for life — whatever the eventual pricing is, you pay 30% of it, forever.
+> You get: 70% off AgentFinOps for life — whatever the eventual pricing is, you pay 30% of it, forever.
 >
-> I get: you use the product when it's ready, you tell me what's broken and what's missing, and I can say 'AgentLens is being used by engineers at [company]' when I talk to investors and other customers.
+> I get: you use the product when it's ready, you tell me what's broken and what's missing, and I can say 'AgentFinOps is being used by engineers at [company]' when I talk to investors and other customers.
 >
 > The LOI is non-binding. If the product never ships, you've lost nothing. If it ships and it's not useful to you, you walk away. The discount is only meaningful if the product is worth something to you.
 >

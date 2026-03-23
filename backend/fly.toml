@@ -1,16 +1,16 @@
-# fly.toml — AgentLens API deployment configuration
+# fly.toml — AgentFinOps API deployment configuration
 #
 # Before deploying for the first time:
-#   1. Create your app:    fly apps create agentlens-api
+#   1. Create your app:    fly apps create agentfinops-api
 #   2. Create a Postgres cluster:
-#                          fly postgres create --name agentlens-db --region ams
+#                          fly postgres create --name agentfinops-db --region ams
 #   3. Attach it (sets DATABASE_URL automatically):
-#                          fly postgres attach agentlens-db
+#                          fly postgres attach agentfinops-db
 #   4. Deploy:             fly deploy
 #
 # Change the app name below to match what you chose in step 1.
 
-app = "agentlens-api"
+app = "agentfinops-api"
 primary_region = "ams"
 
 [build]

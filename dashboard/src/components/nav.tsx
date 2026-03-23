@@ -17,7 +17,7 @@ export function Nav() {
   return (
     <nav className="w-56 border-r border-zinc-800 bg-zinc-950 p-4 min-h-screen">
       <div className="mb-8">
-        <h1 className="text-lg font-bold text-white">AgentLens</h1>
+        <h1 className="text-lg font-bold text-white">AgentFinOps</h1>
         <p className="text-xs text-zinc-500">Cost Optimization</p>
       </div>
       <ul className="space-y-1">

@@ -1,12 +1,12 @@
-"""@agentlens.trace decorator for instrumenting custom agent functions."""
+"""@agentfinops.trace decorator for instrumenting custom agent functions."""
 
 from __future__ import annotations
 
 import functools
 from typing import Any, Callable
 
-from agentlens.client import get_client
-from agentlens.spans import Span, SpanKind
+from agentfinops.client import get_client
+from agentfinops.spans import Span, SpanKind
 
 
 def trace(

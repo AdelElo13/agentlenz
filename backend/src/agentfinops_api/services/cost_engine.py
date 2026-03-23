@@ -8,8 +8,8 @@ from datetime import datetime, timedelta, timezone
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from agentlens_api.models import Event
-from agentlens_api.schemas import CostBreakdown, CostResponse
+from agentfinops_api.models import Event
+from agentfinops_api.schemas import CostBreakdown, CostResponse
 
 
 async def get_cost_breakdown(

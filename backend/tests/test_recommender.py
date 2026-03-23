@@ -1,7 +1,7 @@
 import uuid
 import pytest
-from agentlens_api.models import Event
-from agentlens_api.services.recommender import get_recommendations
+from agentfinops_api.models import Event
+from agentfinops_api.services.recommender import get_recommendations
 from tests.conftest import TEST_API_KEY
 
 
@@ -28,7 +28,7 @@ async def _seed_events(db, project_id):
 @pytest.mark.asyncio
 async def test_recommender_suggests_downgrades(db):
     from sqlalchemy import select
-    from agentlens_api.models import ApiKey
+    from agentfinops_api.models import ApiKey
     result = await db.execute(select(ApiKey))
     api_key = result.scalar_one()
     await _seed_events(db, api_key.project_id)
@@ -41,7 +41,7 @@ async def test_recommender_suggests_downgrades(db):
 @pytest.mark.asyncio
 async def test_recommender_cross_provider(db):
     from sqlalchemy import select
-    from agentlens_api.models import ApiKey
+    from agentfinops_api.models import ApiKey
     result = await db.execute(select(ApiKey))
     api_key = result.scalar_one()
     await _seed_events(db, api_key.project_id)

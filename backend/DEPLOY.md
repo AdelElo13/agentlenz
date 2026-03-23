@@ -1,4 +1,4 @@
-# Deploying AgentLens API to Fly.io
+# Deploying AgentFinOps API to Fly.io
 
 ## Prerequisites
 
@@ -20,16 +20,16 @@ fly auth login
 ### 1. Create the Fly app
 
 ```bash
-fly apps create agentlens-api
+fly apps create agentfinops-api
 ```
 
-> Change `agentlens-api` to a globally unique name if that one is taken.
+> Change `agentfinops-api` to a globally unique name if that one is taken.
 > Update `app = "..."` in `fly.toml` to match.
 
 ### 2. Create the Postgres cluster
 
 ```bash
-fly postgres create --name agentlens-db --region ams
+fly postgres create --name agentfinops-db --region ams
 ```
 
 Save the credentials printed at the end — they are shown only once.
@@ -37,7 +37,7 @@ Save the credentials printed at the end — they are shown only once.
 ### 3. Attach Postgres to the app
 
 ```bash
-fly postgres attach agentlens-db --app agentlens-api
+fly postgres attach agentfinops-db --app agentfinops-api
 ```
 
 This automatically sets the `DATABASE_URL` secret on your app.
@@ -46,7 +46,7 @@ This automatically sets the `DATABASE_URL` secret on your app.
 
 ```bash
 # Example: a JWT secret, external API keys, etc.
-fly secrets set SECRET_KEY=your-value-here --app agentlens-api
+fly secrets set SECRET_KEY=your-value-here --app agentfinops-api
 ```
 
 ### 5. Deploy
@@ -77,9 +77,9 @@ After the database is up and running, use the helper script:
 ```bash
 # Requires DATABASE_URL pointing at the Fly Postgres instance.
 # Easiest way: open a proxy in another terminal:
-#   fly proxy 5432 -a agentlens-db
+#   fly proxy 5432 -a agentfinops-db
 # Then in this terminal:
-export DATABASE_URL="postgresql://postgres:<password>@localhost:5432/agentlens_api"
+export DATABASE_URL="postgresql://postgres:<password>@localhost:5432/agentfinops_api"
 
 python scripts/create_api_key.py "My Project"
 ```
@@ -90,7 +90,7 @@ The key itself is never stored; only its SHA-256 hash lives in the database.
 ### Running the script via Fly SSH (no local proxy needed)
 
 ```bash
-fly ssh console --app agentlens-api
+fly ssh console --app agentfinops-api
 # Inside the container:
 python scripts/create_api_key.py "My Project"
 ```
@@ -101,8 +101,8 @@ python scripts/create_api_key.py "My Project"
 
 | Task | Command |
 |---|---|
-| View logs | `fly logs --app agentlens-api` |
-| Open a shell | `fly ssh console --app agentlens-api` |
-| Connect to Postgres | `fly postgres connect -a agentlens-db` |
-| Scale down to zero | `fly scale count 0 --app agentlens-api` |
-| Check app status | `fly status --app agentlens-api` |
+| View logs | `fly logs --app agentfinops-api` |
+| Open a shell | `fly ssh console --app agentfinops-api` |
+| Connect to Postgres | `fly postgres connect -a agentfinops-db` |
+| Scale down to zero | `fly scale count 0 --app agentfinops-api` |
+| Check app status | `fly status --app agentfinops-api` |

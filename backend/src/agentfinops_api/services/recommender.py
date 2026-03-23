@@ -8,9 +8,9 @@ from datetime import datetime, timedelta, timezone
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from agentlens_api.models import Event
-from agentlens_api.schemas import Recommendation, RecommendationsResponse
-from agentlens_api.services.pricing import MODEL_PRICING, calculate_cost
+from agentfinops_api.models import Event
+from agentfinops_api.schemas import Recommendation, RecommendationsResponse
+from agentfinops_api.services.pricing import MODEL_PRICING, calculate_cost
 
 DOWNGRADE_MAP: dict[str, list[str]] = {
     "claude-opus-4-20250514": ["claude-sonnet-4-20250514", "claude-haiku-4-5-20251001"],

@@ -3,10 +3,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from agentlens_api.routes import ingest, costs, waste, recommendations, budgets
+from agentfinops_api.routes import ingest, costs, waste, recommendations, budgets
 
 app = FastAPI(
-    title="AgentLens API",
+    title="AgentFinOps API",
     version="0.1.0",
     description="AI agent cost optimization platform",
 )

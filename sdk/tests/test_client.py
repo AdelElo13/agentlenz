@@ -1,13 +1,13 @@
 import pytest
 from unittest.mock import AsyncMock, patch
-from agentlens.config import init
-from agentlens.client import EventClient, get_client
-from agentlens.spans import Span, SpanKind
+from agentfinops.config import init
+from agentfinops.client import EventClient, get_client
+from agentfinops.spans import Span, SpanKind
 
 
 @pytest.fixture(autouse=True)
 def setup_config():
-    init(api_key="al_test123", endpoint="http://localhost:8000")
+    init(api_key="af_test123", endpoint="http://localhost:8000")
 
 
 def test_get_client_returns_singleton():
@@ -29,7 +29,7 @@ def test_client_queues_span():
 
 
 def test_client_disabled_skips_record():
-    init(api_key="al_test123", enabled=False)
+    init(api_key="af_test123", enabled=False)
     client = EventClient()
     span = Span(
         name="test", kind=SpanKind.LLM_CALL,

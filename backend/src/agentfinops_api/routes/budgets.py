@@ -8,10 +8,10 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from agentlens_api.auth import get_project_id
-from agentlens_api.db import get_db
-from agentlens_api.models import Budget
-from agentlens_api.schemas import BudgetCreate, BudgetResponse
+from agentfinops_api.auth import get_project_id
+from agentfinops_api.db import get_db
+from agentfinops_api.models import Budget
+from agentfinops_api.schemas import BudgetCreate, BudgetResponse
 
 router = APIRouter()
 

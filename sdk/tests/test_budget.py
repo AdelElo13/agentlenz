@@ -1,5 +1,5 @@
 import pytest
-from agentlens.budget import BudgetContext, BudgetExceededError
+from agentfinops.budget import BudgetContext, BudgetExceededError
 
 
 def test_budget_tracks_spending():

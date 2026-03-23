@@ -1,8 +1,8 @@
 """Reset global SDK state between tests to prevent flaky ordering issues."""
 
 import pytest
-import agentlens.config as config_mod
-import agentlens.client as client_mod
+import agentfinops.config as config_mod
+import agentfinops.client as client_mod
 
 
 @pytest.fixture(autouse=True)

@@ -55,6 +55,6 @@ class Span:
                 "gen_ai.usage.input_tokens": self.input_tokens,
                 "gen_ai.usage.output_tokens": self.output_tokens,
                 **({"error.message": self.error} if self.error else {}),
-                **{f"agentlens.{k}": v for k, v in self.metadata.items()},
+                **{f"agentfinops.{k}": v for k, v in self.metadata.items()},
             },
         }
