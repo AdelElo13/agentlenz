@@ -1,4 +1,4 @@
-# X/Twitter Search Queries — AgentFinOps Prospect Finding
+# X/Twitter Search Queries — AgentLenz Prospect Finding
 
 Use the "Latest" tab for all searches (not Top). Filter mentally for people with technical roles at companies that would have real AI spend.
 
@@ -109,7 +109,7 @@ from:swyx OR from:simonw OR from:karpathy -is:retweet
 
 ## Category 4 — Specific Pain Points
 
-Searches for people with adjacent problems that AgentFinOps solves — cost visibility, unexpected bills, optimization work.
+Searches for people with adjacent problems that AgentLenz solves — cost visibility, unexpected bills, optimization work.
 
 ```
 "optimizing" ("llm" OR "openai" OR "claude") ("costs" OR "tokens" OR "spend") -is:retweet

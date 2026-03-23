@@ -1,7 +1,7 @@
 import uuid
 import pytest
-from agentfinops_api.models import Event
-from agentfinops_api.services.waste_detector import detect_waste
+from agentlenz_api.models import Event
+from agentlenz_api.services.waste_detector import detect_waste
 from tests.conftest import TEST_API_KEY
 
 
@@ -29,7 +29,7 @@ async def _seed_wasteful_events(db, project_id):
 @pytest.mark.asyncio
 async def test_detect_expensive_model_overuse(db):
     from sqlalchemy import select
-    from agentfinops_api.models import ApiKey
+    from agentlenz_api.models import ApiKey
     result = await db.execute(select(ApiKey))
     api_key = result.scalar_one()
     await _seed_wasteful_events(db, api_key.project_id)
@@ -42,7 +42,7 @@ async def test_detect_expensive_model_overuse(db):
 @pytest.mark.asyncio
 async def test_detect_stuck_loop(db):
     from sqlalchemy import select
-    from agentfinops_api.models import ApiKey
+    from agentlenz_api.models import ApiKey
     result = await db.execute(select(ApiKey))
     api_key = result.scalar_one()
     await _seed_wasteful_events(db, api_key.project_id)
@@ -55,7 +55,7 @@ async def test_detect_stuck_loop(db):
 @pytest.mark.asyncio
 async def test_waste_has_savings_estimate(db):
     from sqlalchemy import select
-    from agentfinops_api.models import ApiKey
+    from agentlenz_api.models import ApiKey
     result = await db.execute(select(ApiKey))
     api_key = result.scalar_one()
     await _seed_wasteful_events(db, api_key.project_id)

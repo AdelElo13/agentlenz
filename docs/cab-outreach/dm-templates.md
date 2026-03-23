@@ -12,7 +12,7 @@ Five variations for different contexts. Always personalize the opening line with
 
 **X/Twitter (under 280 chars):**
 ```
-Hey [name] — saw your post about [their AI cost pain, e.g. "the OpenAI bill hitting $4K last month"]. Building AgentFinOps to fix exactly that. Looking for 10 early advisors to shape the product. 70% lifetime discount in exchange for honest feedback. Worth a quick chat?
+Hey [name] — saw your post about [their AI cost pain, e.g. "the OpenAI bill hitting $4K last month"]. Building AgentLenz to fix exactly that. Looking for 10 early advisors to shape the product. 70% lifetime discount in exchange for honest feedback. Worth a quick chat?
 ```
 
 **LinkedIn (longer version):**
@@ -21,7 +21,7 @@ Hi [name],
 
 Saw your post about [specific thing they said about AI costs] — that's exactly the problem I'm building around.
 
-AgentFinOps is an AI agent cost optimization platform. I'm currently looking for 10 engineering leads and developers to join a Customer Advisory Board. The deal is simple: you get 70% off for life, and in exchange you use the product, give honest feedback, and let us say you're an early customer.
+AgentLenz is an AI agent cost optimization platform. I'm currently looking for 10 engineering leads and developers to join a Customer Advisory Board. The deal is simple: you get 70% off for life, and in exchange you use the product, give honest feedback, and let us say you're an early customer.
 
 No commitment to keep using it. Just need people who have real AI API spend and are willing to tell me when I'm wrong.
 
@@ -43,7 +43,7 @@ Great — here's a 15-min slot: [Calendly link]. I'll send a short agenda before
 
 **X/Twitter (under 280 chars):**
 ```
-Hey [name] — love what you're building with [their project]. Question: how are you tracking costs across your agent runs? Building AgentFinOps for that problem and looking for 10 advisors. 70% lifetime deal if you're open to a 15-min chat.
+Hey [name] — love what you're building with [their project]. Question: how are you tracking costs across your agent runs? Building AgentLenz for that problem and looking for 10 advisors. 70% lifetime deal if you're open to a 15-min chat.
 ```
 
 **LinkedIn (longer version):**
@@ -54,7 +54,7 @@ I've been following your work on [project/company] — the [specific thing, e.g.
 
 Quick question: how are you currently handling cost visibility across your agent runs? Are you tracking per-agent spend, or is it just one big API bill at the end of the month?
 
-I'm building AgentFinOps — cost optimization for AI agents. Right now I'm putting together a Customer Advisory Board of 10 people who are deep in the weeds on this problem. You'd get 70% off for life and help shape what we build.
+I'm building AgentLenz — cost optimization for AI agents. Right now I'm putting together a Customer Advisory Board of 10 people who are deep in the weeds on this problem. You'd get 70% off for life and help shape what we build.
 
 15 minutes to swap notes on the problem? Happy to share what I'm hearing from others in the space too.
 
@@ -83,7 +83,7 @@ Hi [name],
 
 I noticed [company] is [doing something specific — launched X feature, hiring for LLM roles, etc.]. You're clearly running real AI workloads.
 
-I'm building AgentFinOps — a platform that gives engineering teams visibility and control over AI agent costs. Think: per-agent cost attribution, budget alerts, and optimization suggestions that don't require you to rearchitect everything.
+I'm building AgentLenz — a platform that gives engineering teams visibility and control over AI agent costs. Think: per-agent cost attribution, budget alerts, and optimization suggestions that don't require you to rearchitect everything.
 
 I'm looking for 10 engineering leads to join a Customer Advisory Board. The ask: use the product, tell me what's broken, and let me list you as an early customer. The deal: 70% discount for life.
 
@@ -105,7 +105,7 @@ Perfect. Let's do it: [Calendly link]. I'll keep it to 15 minutes. Main thing I 
 
 **Reddit DM or HN (shorter, conversational):**
 ```
-Hey — saw your comment in [thread] about [their specific point]. That's exactly the problem I'm trying to solve with AgentFinOps.
+Hey — saw your comment in [thread] about [their specific point]. That's exactly the problem I'm trying to solve with AgentLenz.
 
 I'm building in public and looking for 10 people who have real AI API spend to be on a Customer Advisory Board — 70% lifetime discount in exchange for honest feedback. No pressure, but if you're still feeling that pain, I'd love to swap notes for 15 min.
 ```
@@ -123,7 +123,7 @@ Great. [Calendly link] — grab whatever works. I'll ask about your current setu
 
 **X/Twitter (under 280 chars):**
 ```
-Hey [name] — [mutual] suggested I reach out. I'm building AgentFinOps (AI cost optimization) and looking for 10 advisors. You'd know this problem well. 70% lifetime deal for 15 min of your time + honest feedback. Worth it?
+Hey [name] — [mutual] suggested I reach out. I'm building AgentLenz (AI cost optimization) and looking for 10 advisors. You'd know this problem well. 70% lifetime deal for 15 min of your time + honest feedback. Worth it?
 ```
 
 **LinkedIn (longer version):**
@@ -132,7 +132,7 @@ Hi [name],
 
 [Mutual connection] suggested I reach out — they thought you'd have strong opinions on this.
 
-I'm building AgentFinOps, an AI agent cost optimization platform. I'm putting together a Customer Advisory Board of 10 people who are actually running LLM workloads at scale. The structure is simple: 15-minute call to see if it's a fit, and if it is, you sign a non-binding LOI, get 70% off for life, and help shape what gets built.
+I'm building AgentLenz, an AI agent cost optimization platform. I'm putting together a Customer Advisory Board of 10 people who are actually running LLM workloads at scale. The structure is simple: 15-minute call to see if it's a fit, and if it is, you sign a non-binding LOI, get 70% off for life, and help shape what gets built.
 
 [Mutual] mentioned you've been dealing with [relevant problem if you know it]. Would love to hear more about that context.
 
@@ -152,5 +152,5 @@ Great. [Calendly link]. I'll send a short note beforehand about what I'd love to
 
 - **No response after 3 days:** One follow-up, max. "Hey [name] — just bumping this in case it got buried. Still interested if you are." Then let it go.
 - **They say "not right now":** "Totally fair — mind if I follow up in a month?" If yes, set a reminder.
-- **They ask what AgentFinOps does before agreeing to a call:** Give a one-liner, then redirect to the call. "It's cost visibility and optimization for AI agents — easier to show than explain. Worth 15 min?"
+- **They ask what AgentLenz does before agreeing to a call:** Give a one-liner, then redirect to the call. "It's cost visibility and optimization for AI agents — easier to show than explain. Worth 15 min?"
 - **They ask about pricing beyond the CAB discount:** "CAB members get 70% off for life. General pricing TBD based on what we learn from the advisory board — that's part of the point of having one."

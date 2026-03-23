@@ -44,6 +44,6 @@ async def test_ingest_rejects_bad_key(client):
     response = await client.post(
         "/v1/events",
         json={"events": []},
-        headers={"Authorization": "Bearer af_wrong_key"},
+        headers={"Authorization": "Bearer alz_wrong_key"},
     )
     assert response.status_code == 401

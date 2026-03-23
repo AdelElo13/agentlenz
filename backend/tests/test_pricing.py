@@ -1,5 +1,5 @@
 import pytest
-from agentfinops_api.services.pricing import calculate_cost, MODEL_PRICING
+from agentlenz_api.services.pricing import calculate_cost, MODEL_PRICING
 
 
 def test_anthropic_sonnet_cost():

@@ -38,10 +38,10 @@ def main() -> None:
     # asyncpg uses postgresql+asyncpg:// — psycopg2 needs plain postgresql://
     sync_url = database_url.replace("postgresql+asyncpg://", "postgresql://")
 
-    # Generate key:  af_ + 32 random hex chars  (e.g. af_a3f9...)
+    # Generate key:  alz_ + 32 random hex chars  (e.g. alz_a3f9...)
     raw_token = secrets.token_hex(16)          # 32 hex chars
-    api_key = f"af_{raw_token}"
-    key_prefix = api_key[:10]                  # "af_" + first 7 chars
+    api_key = f"alz_{raw_token}"
+    key_prefix = api_key[:11]                  # "alz_" + first 7 chars
     key_hash = hashlib.sha256(api_key.encode()).hexdigest()
 
     project_id = uuid.uuid4()

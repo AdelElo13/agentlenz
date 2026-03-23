@@ -7,11 +7,11 @@ import pytest_asyncio
 from httpx import ASGITransport, AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
-from agentfinops_api.models import Base, Project, ApiKey
-from agentfinops_api.db import get_db
-from agentfinops_api.main import app
+from agentlenz_api.models import Base, Project, ApiKey
+from agentlenz_api.db import get_db
+from agentlenz_api.main import app
 
-TEST_API_KEY = "af_test_abc123"
+TEST_API_KEY = "alz_test_abc123"
 TEST_KEY_HASH = sha256(TEST_API_KEY.encode()).hexdigest()
 
 engine = create_async_engine("sqlite+aiosqlite:///:memory:")
@@ -29,7 +29,7 @@ async def db():
         api_key = ApiKey(
             id=uuid.uuid4(),
             key_hash=TEST_KEY_HASH,
-            key_prefix="af_test_",
+            key_prefix="alz_test_",
             project_id=project.id,
         )
         session.add(api_key)

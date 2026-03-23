@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "agentfinops"
+name = "agentlenz"
 version = "0.1.0"
 description = "Cut your AI agent costs — trace, optimize, enforce budgets"
 requires-python = ">=3.10"
@@ -22,7 +22,7 @@ dev = [
 ]
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/agentfinops"]
+packages = ["src/agentlenz"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

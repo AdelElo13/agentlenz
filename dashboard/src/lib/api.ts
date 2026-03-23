@@ -1,11 +1,11 @@
-const API_BASE = process.env.NEXT_PUBLIC_AGENTFINOPS_API_URL || "http://localhost:8000";
+const API_BASE = process.env.NEXT_PUBLIC_AGENTLENZ_API_URL || "http://localhost:8000";
 
 async function fetchApi<T>(path: string, options?: RequestInit): Promise<T> {
   const res = await fetch(`${API_BASE}${path}`, {
     ...options,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${process.env.NEXT_PUBLIC_AGENTFINOPS_API_KEY || ""}`,
+      Authorization: `Bearer ${process.env.NEXT_PUBLIC_AGENTLENZ_API_KEY || ""}`,
       ...options?.headers,
     },
   });

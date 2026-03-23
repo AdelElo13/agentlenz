@@ -1,5 +1,5 @@
 import uuid
-from agentfinops.spans import Span, SpanKind
+from agentlenz.spans import Span, SpanKind
 
 
 def test_span_creation():

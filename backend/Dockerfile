@@ -28,7 +28,7 @@ EXPOSE 8080
 
 # Run Alembic migrations then start uvicorn
 CMD alembic upgrade head && \
-    uvicorn agentfinops_api.main:app \
+    uvicorn agentlenz_api.main:app \
         --host 0.0.0.0 \
         --port 8080 \
         --workers 2

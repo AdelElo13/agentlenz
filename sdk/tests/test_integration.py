@@ -6,23 +6,23 @@ import os
 import pytest
 
 pytestmark = pytest.mark.skipif(
-    os.environ.get("AGENTFINOPS_INTEGRATION") != "1",
-    reason="Set AGENTFINOPS_INTEGRATION=1 to run",
+    os.environ.get("AGENTLENZ_INTEGRATION") != "1",
+    reason="Set AGENTLENZ_INTEGRATION=1 to run",
 )
 
 
 def test_sdk_sends_events_to_backend():
-    import agentfinops
-    from agentfinops.client import get_client
+    import agentlenz
+    from agentlenz.client import get_client
 
-    agentfinops.init(
-        api_key=os.environ.get("AGENTFINOPS_API_KEY", "af_test_key"),
-        endpoint=os.environ.get("AGENTFINOPS_ENDPOINT", "http://localhost:8000"),
+    agentlenz.init(
+        api_key=os.environ.get("AGENTLENZ_API_KEY", "alz_test_key"),
+        endpoint=os.environ.get("AGENTLENZ_ENDPOINT", "http://localhost:8000"),
     )
 
     client = get_client()
 
-    from agentfinops.spans import Span, SpanKind
+    from agentlenz.spans import Span, SpanKind
     span = Span(
         name="integration_test",
         kind=SpanKind.LLM_CALL,
