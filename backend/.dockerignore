@@ -1,0 +1,37 @@
+# Development virtualenv
+.venv/
+venv/
+
+# Python bytecode
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Test artifacts
+tests/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Git
+.git/
+.gitignore
+
+# Local secrets / env files
+.env
+.env.*
+
+# Deployment docs (not needed in image)
+DEPLOY.md
+scripts/
+
+# Build artifacts
+dist/
+*.egg-info/
