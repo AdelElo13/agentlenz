@@ -1,6 +1,5 @@
 FROM python:3.12-slim
 
-# Install system dependencies needed by psycopg2-binary and asyncpg
 RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc \
     libpq-dev \
@@ -8,26 +7,25 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 WORKDIR /app
 
-# Copy only the files needed to install dependencies first (layer caching)
+# Copy everything needed for install
 COPY pyproject.toml ./
+COPY src/ ./src/
 
-# Install the package dependencies (no dev extras)
+# Install the package (includes dependencies)
 RUN pip install --no-cache-dir --upgrade pip \
  && pip install --no-cache-dir .
 
-# Copy the rest of the source code
-COPY src/ ./src/
+# Copy Alembic files
 COPY alembic/ ./alembic/
 COPY alembic.ini ./
 
-# Create a non-root user and hand ownership over
+# Non-root user
 RUN useradd --create-home --shell /bin/bash appuser \
  && chown -R appuser:appuser /app
 USER appuser
 
 EXPOSE 8080
 
-# Run Alembic migrations then start uvicorn
 CMD alembic upgrade head && \
     uvicorn agentlenz_api.main:app \
         --host 0.0.0.0 \
