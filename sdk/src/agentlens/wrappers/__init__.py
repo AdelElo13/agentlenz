@@ -1,8 +1,25 @@
-"""Provider wrappers — implemented in Tasks 4 & 5."""
+"""Provider-specific client wrappers."""
 
 from __future__ import annotations
 
+from typing import Any
 
-def wrap(*args, **kwargs):
-    """Placeholder — full implementation in Tasks 4 & 5."""
-    raise NotImplementedError("agentlens.wrap is not yet implemented")
+
+def wrap(client: Any) -> Any:
+    """Wrap an AI provider client to track costs with AgentLens.
+
+    Supports: anthropic.Anthropic(), openai.OpenAI()
+    """
+    client_type = type(client).__module__
+
+    if "anthropic" in client_type:
+        from agentlens.wrappers.anthropic import wrap_anthropic
+        return wrap_anthropic(client)
+    elif "openai" in client_type:
+        from agentlens.wrappers.openai import wrap_openai
+        return wrap_openai(client)
+    else:
+        raise ValueError(
+            f"Unsupported client type: {type(client).__name__}. "
+            "AgentLens supports anthropic.Anthropic() and openai.OpenAI()."
+        )
