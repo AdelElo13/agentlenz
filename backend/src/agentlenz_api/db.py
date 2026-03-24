@@ -22,7 +22,11 @@ elif DATABASE_URL.startswith("postgresql://"):
 # asyncpg doesn't support sslmode as a query param
 DATABASE_URL = DATABASE_URL.replace("?sslmode=disable", "")
 
-engine = create_async_engine(DATABASE_URL, echo=False)
+engine = create_async_engine(
+    DATABASE_URL,
+    echo=False,
+    connect_args={"ssl": None} if "flycast" in DATABASE_URL or "internal" in DATABASE_URL else {},
+)
 async_session = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
 
