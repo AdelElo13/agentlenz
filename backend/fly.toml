@@ -29,8 +29,8 @@ primary_region = "ams"
     soft_limit = 20
 
 [[vm]]
-  size = "shared-cpu-1x"  # 256 MB RAM — smallest available
-  memory = "256mb"
+  size = "shared-cpu-1x"
+  memory = "512mb"
 
 [env]
   PORT = "8080"
