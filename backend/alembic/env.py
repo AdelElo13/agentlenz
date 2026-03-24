@@ -13,9 +13,15 @@ config = context.config
 # Override sqlalchemy.url with DATABASE_URL env var if set
 db_url = os.environ.get("DATABASE_URL", "")
 if db_url:
-    # Fly.io uses postgres:// but SQLAlchemy needs postgresql://
+    # Fly.io uses postgres:// — Alembic (sync) needs postgresql+psycopg2://
     if db_url.startswith("postgres://"):
-        db_url = db_url.replace("postgres://", "postgresql://", 1)
+        db_url = db_url.replace("postgres://", "postgresql+psycopg2://", 1)
+    elif db_url.startswith("postgresql://"):
+        db_url = db_url.replace("postgresql://", "postgresql+psycopg2://", 1)
+    elif db_url.startswith("postgresql+asyncpg://"):
+        db_url = db_url.replace("postgresql+asyncpg://", "postgresql+psycopg2://", 1)
+    # Strip sslmode param if present (psycopg2 handles it differently)
+    db_url = db_url.replace("?sslmode=disable", "")
     config.set_main_option("sqlalchemy.url", db_url)
 
 if config.config_file_name is not None:
