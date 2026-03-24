@@ -19,14 +19,12 @@ if DATABASE_URL.startswith("postgres://"):
 elif DATABASE_URL.startswith("postgresql://"):
     DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql+asyncpg://", 1)
 
-# asyncpg doesn't support sslmode as a query param
-DATABASE_URL = DATABASE_URL.replace("?sslmode=disable", "")
+# asyncpg needs sslmode as ssl param, and Fly internal doesn't use SSL
+DATABASE_URL = DATABASE_URL.replace("?sslmode=disable", "?ssl=disable")
+if "?" not in DATABASE_URL and ("flycast" in DATABASE_URL or "internal" in DATABASE_URL):
+    DATABASE_URL += "?ssl=disable"
 
-engine = create_async_engine(
-    DATABASE_URL,
-    echo=False,
-    connect_args={"ssl": None} if "flycast" in DATABASE_URL or "internal" in DATABASE_URL else {},
-)
+engine = create_async_engine(DATABASE_URL, echo=False)
 async_session = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
 
