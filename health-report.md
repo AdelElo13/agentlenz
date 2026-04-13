@@ -1,4 +1,4 @@
-# Weekly Health Report — 2026-04-06
+# Weekly Health Report — 2026-04-13
 
 > Generated automatically. Repos analysed: `agentlenz`, `DockWright-MacOS-Agent`.
 
@@ -6,120 +6,159 @@
 
 ## agentlenz — ⚠️ Warning
 
-**Overall score: Warning** — codebase is clean but has minor hygiene issues.
+**Overall score: Warning** — tests confirmed passing for the first time this week; dashboard deps are stale and pyc tracking remains unresolved.
 
 ### 1. Stale Branches
 No stale merged branches. Only `main` exists locally and on `origin`. ✅
 
 ### 2. Dependency Health
+
 | Ecosystem | File | Status |
 |---|---|---|
-| Node / npm | `dashboard/package.json` | ✅ All packages up to date (`npm outdated` returned nothing) |
-| Python (backend) | `backend/pyproject.toml` | ⚠️ Not checked against lockfile (system pip shows 18 outdated packages; likely OS-level, not project deps) |
-| Python (sdk) | `sdk/pyproject.toml` | ⚠️ Not checked against lockfile |
+| Node / npm | `dashboard/package.json` | ⚠️ See below |
+| Python (backend) | `backend/pyproject.toml` | ✅ Semver ranges current; 17 tests pass |
+| Python (sdk) | `sdk/pyproject.toml` | ✅ Semver ranges current; 25 tests pass |
 
-Recommended: run `pip list --outdated` inside each virtual environment to isolate project-level drift.
+**Dashboard — outdated / missing packages** (`npm outdated`):
+
+| Package | Installed | Latest |
+|---|---|---|
+| `@tanstack/react-query` | **MISSING** | 5.99.0 |
+| `next` | 16.2.1 | **16.2.3** |
+| `react` | 19.2.4 | **19.2.5** |
+| `react-dom` | 19.2.4 | **19.2.5** |
+| `recharts` | 3.8.0 | **3.8.1** |
+
+`node_modules` is not fully installed — `@tanstack/react-query` and several `@types/*` packages are missing. Run `npm install` in `dashboard/` to restore.
 
 ### 3. Code Quality — TODO / FIXME / HACK
 ```
-Count: 0 across 48 source files (.py, .ts, .js, .swift)
+Count: 0 across all .py, .ts, .js source files
 ```
 ✅ No technical debt markers found.
 
 ### 4. Test Status
-Test suites exist in subdirectories:
-- `backend/pyproject.toml` — pytest config present; not run (run `cd backend && pytest`)
-- `sdk/pyproject.toml` — pytest config present; not run (run `cd sdk && pytest`)
-- `dashboard/package.json` — npm test config present; not run
+Tests were executed this week:
 
-⚠️ No root-level test runner; tests must be invoked per-subproject.
+| Suite | Command | Result |
+|---|---|---|
+| SDK | `cd sdk && python3 -m pytest -q` | ✅ **25 passed, 1 skipped** |
+| Backend | `cd backend && python3 -m pytest -q` | ✅ **17 passed** |
+| Dashboard | — | ⚠️ No test suite configured |
+
+**Minor SDK warning:** An atexit `RuntimeError: Call agentlenz.init() before using AgentLenz` surfaces from `EventClient.flush` (`sdk/src/agentlenz/client.py:46`) during test teardown. Tests still pass, but the flush handler should guard against being called when `init()` was never invoked.
 
 ### 5. Git Hygiene
+
 | Check | Status |
 |---|---|
 | Uncommitted changes | ✅ None |
 | Stashes | ✅ None |
-| Large files | ✅ Largest tracked file: `dashboard/package-lock.json` (247 KB — expected) |
-| Compiled bytecode tracked | ⚠️ `.pyc` files in `sdk/tests/__pycache__/` are committed to git |
+| Largest tracked file | ✅ `dashboard/package-lock.json` (242 KB — expected) |
+| Compiled bytecode tracked | ⚠️ `.pyc` files still committed in `sdk/tests/__pycache__/` and `backend/` |
+| Root `.gitignore` | ⚠️ Does not exist — carry-over from 2026-04-06 |
+| HEAD state | ⚠️ Detached at `refs/heads/main` (checkout artifact) |
 
-**Action required:** Add `**/__pycache__/` and `**/*.pyc` to `.gitignore` and remove cached bytecode from tracking.
+**Action required (carry-over):** Create a root `.gitignore` with at minimum:
+```
+**/__pycache__/
+**/*.pyc
+```
+Then run `git rm -r --cached '**/__pycache__/'` to untrack existing bytecode.
 
 ### Recent Activity
 ```
+7f93346 health: weekly report 2026-04-06
 1a3adbb standup: 2026-04-03
 be6e65e standup: 2026-04-01
 ea2b54d standup: 2026-03-27
 011256f fix(backend): use ssl=disable query param for asyncpg on Fly
-dd7a278 fix(backend): disable SSL for Fly internal Postgres connections
 ```
 
-Last code commit: SSL fix for Fly.io Postgres. Recent commits are standup notes.
+No new code commits since last week's health report. Recent activity is standup notes only.
 
 ---
 
 ## DockWright-MacOS-Agent — ⚠️ Warning
 
-**Overall score: Warning** — clean repo but missing tests and has structural hygiene concerns.
+**Overall score: Warning** — no new commits since last report; structural issues (no tests, large binaries) remain open.
 
 ### 1. Stale Branches
-No stale merged branches. Only `main` exists. ✅
+No stale merged branches. Only `main` exists locally and on `origin`. ✅
 
-⚠️ **HEAD is in a detached state** (`HEAD detached at refs/heads/main`). This is likely an artifact of the checkout workflow but should be verified.
+⚠️ **HEAD is in a detached state** (`HEAD detached at refs/heads/main`) — carry-over from last week.
 
 ### 2. Dependency Health
-No standard package manifest found (`Package.swift`, `package.json`, `requirements.txt`, `pyproject.toml` — none present). This is a pure Xcode project; dependencies are managed via Xcode's built-in package resolution.
+No standard package manifest (`Package.swift`, `Package.resolved`, `package.json`, `requirements.txt`). Pure Xcode project — no Swift Package Manager dependencies declared.
+
+| Setting | Value |
+|---|---|
+| Swift version | 5.0 |
+| Deployment target | macOS 14.0 (Sonoma) |
+| SPM packages | None |
+| Third-party deps | Embedded via system Python (`websocket`, `asyncio`, `subprocess`) |
 
 ⚠️ Cannot automatically check for outdated dependencies. Manually verify in Xcode → File → Packages → Update to Latest Package Versions.
 
 ### 3. Code Quality — TODO / FIXME / HACK
 ```
-Count: 0 across 104 source files (.swift, .py, .ts, .js)
+Count: 0 across 104 .swift source files
 ```
 ✅ No technical debt markers found.
 
 ### 4. Test Status
-No test suite configuration detected (`XCTest` targets would need to be confirmed in `Dockwright.xcodeproj`). ⚠️
+No `XCTest` target detected and no test scheme found in `Dockwright.xcodeproj`. `swift` CLI is not available in this environment.
 
-**Recommendation:** Add an `XCTest` target or a CI workflow that runs `xcodebuild test`.
+⚠️ **No tests exist or can be run.** Carry-over from last week — no progress.
+
+**Recommendation:** Add an `XCTest` target or a GitHub Actions workflow with:
+```
+xcodebuild test -scheme Dockwright -destination 'platform=macOS'
+```
 
 ### 5. Git Hygiene
+
 | Check | Status |
 |---|---|
 | Uncommitted changes | ✅ None |
 | Stashes | ✅ None |
 | Large binary files in git | ⚠️ See below |
 
-**Large files tracked directly in git:**
+**Large files tracked directly in git (unchanged from last week):**
+
 | File | Size |
 |---|---|
-| `assets/demo.mov` | ~1.49 MB |
-| `Dockwright/Resources/Models/embedding_model.onnx` | ~1.27 MB |
-| `Dockwright/Resources/Models/hey_jarvis_v0.1.onnx` | ~1.21 MB |
-| `Dockwright/Resources/Models/melspectrogram.onnx` | ~1.04 MB |
-| `assets/screenshot-empty.png` | ~660 KB |
+| `assets/demo.mov` | 1.5 MB |
+| `Dockwright/Resources/Models/embedding_model.onnx` | 1.3 MB |
+| `Dockwright/Resources/Models/hey_jarvis_v0.1.onnx` | 1.2 MB |
+| `Dockwright/Resources/Models/melspectrogram.onnx` | 1.0 MB |
+| `assets/screenshot-empty.png` | 661 KB |
+| `assets/screenshot-chat.png` | 600 KB |
 
-Total large binary payload: ~5.6 MB. Consider migrating ONNX models and media assets to Git LFS to keep clone size manageable as the project grows.
+Total large binary payload: ~6.3 MB. Consider migrating ONNX models and media assets to Git LFS.
 
 ### Recent Activity
 ```
+d6d3f3f chore: update UIAutomationTool
+645d4ab fix: UI automation element search, Unicode typing, and threading
 928f649 feat: whitelist safe sudo commands (pmset, systemsetup, defaults, etc.)
 358b8d9 docs: simplify sudo instructions for non-devs
 0837d7b docs: add optional sudo setup for system control
-1513e40 fix: correct Keychain keys for integrations, bidirectional tool descriptions
-df050b4 fix: Keychain delete loop to clear duplicate entries
 ```
 
-Active development with recent feature additions and bug fixes. ✅
+⚠️ No new commits since last week's health check.
 
 ---
 
 ## Action Items Summary
 
-| Priority | Repo | Action |
-|---|---|---|
-| Medium | agentlenz | Add `**/__pycache__/` and `*.pyc` to `.gitignore`, remove tracked bytecode |
-| Medium | agentlenz | Run per-project test suites (`pytest`, `npm test`) in CI |
-| Medium | DockWright-MacOS-Agent | Verify / fix detached HEAD state |
-| Medium | DockWright-MacOS-Agent | Add `XCTest` target and wire up CI test run |
-| Low | DockWright-MacOS-Agent | Migrate ONNX models + `demo.mov` to Git LFS |
-| Low | agentlenz | Audit project-level Python deps inside virtual environments |
+| Priority | Status | Repo | Action |
+|---|---|---|---|
+| High | 🔴 New | agentlenz | Run `npm install` in `dashboard/` — `@tanstack/react-query` and others are missing |
+| Medium | 🟡 New | agentlenz | Update dashboard packages: `npm update` (`next` → 16.2.3, `react` → 19.2.5, etc.) |
+| Medium | 🟡 New | agentlenz | Fix `EventClient.flush` atexit guard in `sdk/src/agentlenz/client.py:46` |
+| Medium | 🔴 Open (2nd week) | agentlenz | Add root `.gitignore` and untrack `__pycache__` / `.pyc` files |
+| Medium | 🔴 Open (2nd week) | DockWright-MacOS-Agent | Verify / fix detached HEAD state |
+| Medium | 🔴 Open (2nd week) | DockWright-MacOS-Agent | Add `XCTest` target and CI test run |
+| Low | 🔴 Open (2nd week) | DockWright-MacOS-Agent | Migrate ONNX models + `demo.mov` to Git LFS |
+| Low | 🔴 Open (2nd week) | agentlenz | Set up CI to run `pytest` per subproject on each push |
