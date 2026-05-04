@@ -1,4 +1,4 @@
-# Weekly Health Report — 2026-04-27
+# Weekly Health Report — 2026-05-04
 
 > Generated automatically. Repos analysed: `agentlenz`, `DockWright-MacOS-Agent`.
 
@@ -6,7 +6,7 @@
 
 ## agentlenz — ⚠️ Warning
 
-**Overall score: Warning** — both Python test suites pass; dashboard has minor npm patch updates available and `.pyc` bytecode files remain tracked in git (4th week open).
+**Overall score: Warning** — SDK tests pass; backend tests newly broken (missing virtualenv deps); dashboard patch updates still unapplied; `.pyc` bytecode files remain tracked in git (5th week open).
 
 ### 1. Stale Branches
 No stale merged branches. Only `main` exists locally and on `origin`. ✅
@@ -16,28 +16,20 @@ No stale merged branches. Only `main` exists locally and on `origin`. ✅
 | Ecosystem | File | Status |
 |---|---|---|
 | Node / npm | `dashboard/package.json` | ⚠️ Minor patch updates available — see below |
-| Python (backend) | `backend/pyproject.toml` | ✅ All packages at latest |
-| Python (sdk) | `sdk/pyproject.toml` | ✅ All packages at latest |
-
-**Python packages (installed):**
-
-| Package | Installed | Latest |
-|---------|-----------|--------|
-| fastapi | 0.136.1 | 0.136.1 ✅ |
-| httpx | 0.28.1 | 0.28.1 ✅ |
-| pydantic | 2.13.3 | 2.13.3 ✅ |
+| Python (backend) | `backend/pyproject.toml` | ⚠️ Cannot verify — deps not installed in env |
+| Python (sdk) | `sdk/pyproject.toml` | ✅ All project packages at latest |
 
 **Dashboard — npm outdated:**
 
-| Package | Pinned | Wanted | Latest |
-|---------|--------|--------|--------|
-| next | 16.2.1 | 16.2.4 | 16.2.4 ⚠️ |
-| react | 19.2.4 | 19.2.5 | 19.2.5 ⚠️ |
-| react-dom | 19.2.4 | 19.2.5 | 19.2.5 ⚠️ |
-| @tanstack/react-query | ^5.95.1 | 5.100.5 | 5.100.5 ⚠️ |
-| recharts | ^3.8.0 | 3.8.1 | 3.8.1 ✅ |
+| Package | Pinned | Latest | Delta |
+|---------|--------|--------|-------|
+| next | 16.2.1 | 16.2.4 | ⚠️ patch |
+| react | 19.2.4 | 19.2.5 | ⚠️ patch |
+| react-dom | 19.2.4 | 19.2.5 | ⚠️ patch |
+| @tanstack/react-query | ^5.95.1 | 5.100.9 | ⚠️ minor (was 5.100.5 last week) |
+| recharts | ^3.8.0 | 3.8.1 | ✅ |
 
-> `node_modules` not installed in the checkout — run `npm install` in `dashboard/` before building or auditing.
+> `node_modules` not installed — run `npm install` in `dashboard/` before building or auditing.
 
 ### 3. Code Quality — TODO / FIXME / HACK
 ```
@@ -50,10 +42,12 @@ Count: 0 across all .py, .ts, .js source files
 | Suite | Command | Result |
 |---|---|---|
 | SDK | `cd sdk && python3 -m pytest -q` | ✅ **25 passed, 1 skipped** |
-| Backend | `cd backend && python3 -m pytest -q` | ✅ **17 passed** |
+| Backend | `cd backend && python3 -m pytest -q` | 🔴 **FAIL — `ModuleNotFoundError: No module named 'sqlalchemy'`** |
 | Dashboard | — | ⚠️ No test suite configured |
 
-**Ongoing SDK warning (4th week):** An atexit `RuntimeError: Call agentlenz.init() before using AgentLenz` surfaces from `EventClient.flush` (`sdk/src/agentlenz/client.py:46`) during test teardown. Guard the flush handler against being called when `init()` was never invoked.
+**Backend regression (new this week):** `sqlalchemy` is not installed in the current Python environment, causing the test suite to fail at import time in `tests/conftest.py`. Run `pip install -e ".[dev]"` inside `backend/` to restore the test environment. Was passing (17 tests) as recently as 2026-04-27.
+
+**Ongoing SDK warning (5th week):** An atexit `RuntimeError: Call agentlenz.init() before using AgentLenz` surfaces from `EventClient.flush` (`sdk/src/agentlenz/client.py:46`) during test teardown. Guard the flush handler against being called when `init()` was never invoked.
 
 ### 5. Git Hygiene
 
@@ -62,26 +56,26 @@ Count: 0 across all .py, .ts, .js source files
 | Uncommitted changes | ✅ None |
 | Stashes | ✅ None |
 | Largest tracked file | ✅ `dashboard/package-lock.json` (244 KB — expected) |
-| **Compiled bytecode tracked** | ⚠️ `__pycache__/` directories still committed — 4th week open |
+| **Compiled bytecode tracked** | ⚠️ 50 `__pycache__/*.pyc` files still committed — 5th week open |
 
-**Action required (carry-over — 4th week):** Run `git rm -r --cached '**/__pycache__/'` to untrack existing bytecode, then commit. A root `.gitignore` was added (commit `7430592`) but `git rm --cached` was never run.
+**Action required (carry-over — 5th week):** Run `git rm -r --cached '**/__pycache__/'` to untrack existing bytecode, then commit. `.gitignore` already has `**/__pycache__/` but `git rm --cached` was never run.
 
 ### Recent Activity
 ```
+6dfe816 health: weekly report 2026-04-27
+d0f277c health: weekly report 2026-04-20
 5631d0d standup: 2026-04-20
 28e0715 standup: 2026-04-16
 4355e16 standup: 2026-04-15
-7430592 chore: add .gitignore to exclude __pycache__ and .pyc files
-3a7bf06 health: weekly report 2026-04-13
 ```
 
-Active standup cadence. No new feature commits this week.
+No new feature or fix commits since the 2026-04-20 standup. Standup cadence active.
 
 ---
 
 ## DockWright-MacOS-Agent — ⚠️ Warning
 
-**Overall score: Warning** — no new commits since last report; structural issues (no automated tests, large binaries) remain open.
+**Overall score: Warning** — no new commits for the second consecutive week; structural issues (no automated tests, large binaries in git) remain open.
 
 ### 1. Stale Branches
 No stale merged branches. Only `main` exists locally and on `origin`. ✅
@@ -93,18 +87,18 @@ No standard package manifest (`Package.swift`, `package.json`, `requirements.txt
 
 ### 3. Code Quality — TODO / FIXME / HACK
 ```
-Count: 0 across 104 .swift source files
+Count: 0 across all .swift source files
 ```
 ✅ No technical debt markers found.
 
 ### 4. Test Status
-No `XCTest` target detected and no `swift test`-compatible `Package.swift`. `swift` CLI not available in this environment.
+No `XCTest` target detected and no `swift test`-compatible `Package.swift`. `swift` CLI not available in this Linux environment.
 
-⚠️ **No tests can be run automatically.** Carry-over — no progress in 4 weeks.
+⚠️ **No tests can be run automatically.** Carry-over — no progress in 5 weeks.
 
-**Recommendation:** Add a GitHub Actions workflow with:
-```
-xcodebuild test -scheme Dockwright -destination 'platform=macOS'
+**Recommendation:** Add a GitHub Actions macOS workflow:
+```yaml
+- run: xcodebuild test -scheme Dockwright -destination 'platform=macOS'
 ```
 
 ### 5. Git Hygiene
@@ -113,9 +107,9 @@ xcodebuild test -scheme Dockwright -destination 'platform=macOS'
 |---|---|
 | Uncommitted changes | ✅ None |
 | Stashes | ✅ None |
-| Large binary files in git | ⚠️ ~6.7 MB tracked — see below |
+| Large binary files in git | ⚠️ ~6.7 MB tracked — unchanged since first report |
 
-**Large files tracked directly in git (unchanged for 4 weeks):**
+**Large files tracked directly in git (5 weeks open):**
 
 | File | Size |
 |---|---|
@@ -127,7 +121,7 @@ xcodebuild test -scheme Dockwright -destination 'platform=macOS'
 | `assets/screenshot-chat.png` | 600 KB |
 | `assets/demo.mp4` | 92 KB |
 
-Total large binary payload: ~6.7 MB. Consider migrating ONNX models and media assets to Git LFS.
+Consider migrating ONNX models and media assets to Git LFS.
 
 ### Recent Activity
 ```
@@ -138,7 +132,7 @@ d6d3f3f chore: update UIAutomationTool
 0837d7b docs: add optional sudo setup for system control
 ```
 
-⚠️ No new commits since last week's health check.
+⚠️ No new commits since last week (or the week before).
 
 ---
 
@@ -146,9 +140,10 @@ d6d3f3f chore: update UIAutomationTool
 
 | Priority | Status | Repo | Action |
 |---|---|---|---|
-| High | ⚠️ Open (1st week) | agentlenz | `npm install && npm update` in `dashboard/` — patch updates for `next`, `react`, `react-dom`, `@tanstack/react-query` |
-| Medium | 🔴 Open (4th week) | agentlenz | Run `git rm -r --cached '**/__pycache__/'` to untrack bytecode |
-| Medium | 🟡 Ongoing | agentlenz | Fix `EventClient.flush` atexit guard in `sdk/src/agentlenz/client.py:46` |
-| Medium | 🔴 Open (4th week) | DockWright-MacOS-Agent | Add `XCTest` target and CI test run via `xcodebuild test` |
-| Low | 🔴 Open (4th week) | DockWright-MacOS-Agent | Migrate ONNX models + `demo.mov` to Git LFS |
-| Low | 🔴 Open (3rd week) | agentlenz | Set up CI to run `pytest` per subproject on each push |
+| **High** | 🔴 **New this week** | agentlenz | Restore backend test env: `pip install -e ".[dev]"` in `backend/` |
+| High | ⚠️ Open (2nd week) | agentlenz | `npm install && npm update` in `dashboard/` — patch updates for `next`, `react`, `react-dom`, `@tanstack/react-query` |
+| Medium | 🔴 Open (5th week) | agentlenz | Run `git rm -r --cached '**/__pycache__/'` to untrack 50 bytecode files |
+| Medium | 🟡 Ongoing (5th week) | agentlenz | Fix `EventClient.flush` atexit guard in `sdk/src/agentlenz/client.py:46` |
+| Medium | 🔴 Open (5th week) | DockWright-MacOS-Agent | Add `XCTest` target and CI test run via `xcodebuild test` |
+| Low | 🔴 Open (5th week) | DockWright-MacOS-Agent | Migrate ONNX models + `demo.mov` to Git LFS |
+| Low | 🔴 Open (4th week) | agentlenz | Set up CI to run `pytest` per subproject on each push |
