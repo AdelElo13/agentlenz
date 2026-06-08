@@ -1,4 +1,4 @@
-# Weekly Health Report — 2026-06-01
+# Weekly Health Report — 2026-06-08
 
 > Generated automatically. Repos analysed: `agentlenz`, `DockWright-MacOS-Agent`.
 
@@ -6,36 +6,41 @@
 
 ## agentlenz — ⚠️ Warning
 
-**Overall score: Warning** — all tests pass; dashboard dependency updates still unapplied (5th week); bytecode files still tracked in git (8th week open); no feature/fix commits in 6+ weeks.
+**Overall score: Warning** — all tests pass; new stale remote branch detected; dashboard dependency updates still unapplied (6th week); bytecode files still tracked in git (9th week open); atexit warning persists (9th week).
 
 ### 1. Stale Branches
-No stale merged branches. Only `main` exists locally and on `origin`. ✅
 
-> **Note:** Local HEAD is detached and 1 commit ahead of `origin/main` (standup commit `0ec59e6` not yet pushed).
+| Branch | Status |
+|---|---|
+| `standup-2026-05-27` (remote only) | ⚠️ **New this week** — remote branch not present locally, appears to be an unmerged standup divergence |
+
+**Action:** Delete the stale remote branch:
+```bash
+git push origin --delete standup-2026-05-27
+```
 
 ### 2. Dependency Health
 
 | Ecosystem | File | Status |
 |---|---|---|
-| Python (sdk) | `sdk/pyproject.toml` | ✅ All minimum constraints satisfied — httpx 0.28.1, pydantic 2.13.4 |
-| Python (backend) | `backend/pyproject.toml` | ✅ All constraints satisfied — fastapi 0.136.3, uvicorn 0.48.0, sqlalchemy 2.0.50, alembic 1.18.4 |
-| Node / npm | `dashboard/package.json` | ⚠️ Patch/minor updates available — 5th week unapplied |
+| Python (sdk) | `sdk/pyproject.toml` | ⚠️ `pydantic_core 2.46.4` → latest `2.47.0` (patch update available) |
+| Python (backend) | `backend/pyproject.toml` | ✅ All constraints satisfied — fastapi, uvicorn, sqlalchemy, alembic all current |
+| Node / npm | `dashboard/package.json` | ⚠️ Patch/minor updates available — 6th week unapplied |
 
-> SDK optional extras (`anthropic`, `openai`) are not installed in this CI environment — install with `pip install "agentlenz[anthropic,openai]"` locally.
+**Dashboard pinned versions (carry-over wk 6):**
 
-**Dashboard pinned versions (carry-over wk 5):**
-
-| Package | Pinned | Status |
-|---------|--------|--------|
-| next | 16.2.1 | ⚠️ patch updates available — unchanged since wk 1 |
-| react | 19.2.4 | ⚠️ patch updates available — unchanged since wk 1 |
-| react-dom | 19.2.4 | ⚠️ patch updates available — unchanged since wk 1 |
-| @tanstack/react-query | ^5.95.1 | ⚠️ minor updates available |
-| recharts | ^3.8.0 | ✅ satisfied |
+| Package | Pinned | Latest | Status |
+|---------|--------|--------|--------|
+| `next` | 16.2.1 | 16.2.7 | ⚠️ patch update — unchanged since wk 1 |
+| `react` | 19.2.4 | 19.2.7 | ⚠️ patch update — unchanged since wk 1 |
+| `react-dom` | 19.2.4 | 19.2.7 | ⚠️ patch update — unchanged since wk 1 |
+| `@tanstack/react-query` | ^5.95.1 | 5.101.0 | ⚠️ minor update available |
+| `recharts` | ^3.8.0 | 3.8.1 | ✅ satisfied |
 
 > Run `npm install && npm update` inside `dashboard/` to apply.
 
 ### 3. Code Quality — TODO / FIXME / HACK
+
 ```
 Count: 0 across all .py, .ts, .js, .tsx source files
 ```
@@ -46,12 +51,10 @@ Count: 0 across all .py, .ts, .js, .tsx source files
 | Suite | Command | Result |
 |---|---|---|
 | SDK | `cd sdk && python3 -m pytest -q` | ✅ **25 passed, 1 skipped** (0.09s) |
-| Backend | `cd backend && python3 -m pytest -q` | ✅ **17 passed** (0.46s) |
-| Dashboard | `npm run build` | ✅ **Build succeeded** — 6 static routes generated |
-| Dashboard | `npm run lint` | ✅ **No ESLint errors** |
-| Dashboard | unit tests | ⚠️ No test suite configured in `package.json` |
+| Backend | `cd backend && python3 -m pytest -q` | ✅ **17 passed** (0.44s) |
+| Dashboard | unit tests | ⚠️ No test suite configured in `package.json` (9th week) |
 
-**Ongoing SDK atexit warning (8th week):** `RuntimeError: Call agentlenz.init() before using AgentLenz` fires from `EventClient.flush` at `sdk/src/agentlenz/client.py:46` during test teardown. Add an init-check guard before attempting flush.
+**Ongoing SDK atexit warning (9th week):** `RuntimeError: Call agentlenz.init() before using AgentLenz` fires from `EventClient.flush` at `sdk/src/agentlenz/client.py:46` during test teardown. Add an init-check guard before attempting flush.
 
 ### 5. Git Hygiene
 
@@ -60,10 +63,10 @@ Count: 0 across all .py, .ts, .js, .tsx source files
 | Uncommitted changes | ✅ None |
 | Stashes | ✅ None |
 | Large tracked files | ✅ Only `dashboard/package-lock.json` (240 KB) — expected |
-| Compiled bytecode tracked | ⚠️ `__pycache__/*.pyc` files committed — 8th week open |
-| Unpushed commits | ⚠️ 1 commit (`standup: 2026-06-01`) not yet on `origin/main` |
+| Compiled bytecode tracked | ⚠️ `__pycache__/*.pyc` files committed — **9th week open** |
+| Unpushed commits | ✅ None — HEAD is current with `origin/main` |
 
-**Action required (carry-over — 8th week):** Remove committed `__pycache__` files:
+**Action required (carry-over — 9th week):** Remove committed `__pycache__` files:
 ```bash
 git rm -r --cached '**/__pycache__/'
 git commit -m "chore: untrack bytecode files"
@@ -71,41 +74,45 @@ git commit -m "chore: untrack bytecode files"
 
 ### Recent Activity
 ```
-0ec59e6 standup: 2026-06-01   ← HEAD (not yet pushed)
-c03540d standup: 2026-05-29
-d6f5b53 standup: 2026-05-26
-d166d36 standup: 2026-05-25
-16675e9 standup: 2026-05-22
+b915563 standup: 2026-06-08   ← HEAD
+14aee97 standup: 2026-06-05
+f96429f standup: 2026-06-04
+c6a512c standup: 2026-06-03
+a959f60 standup: 2026-06-02
 ```
 
-Standup cadence is active but no feature or fix commits for 6+ weeks.
+Standup cadence is active. No feature or fix commits in 7+ weeks.
 
 ---
 
 ## DockWright-MacOS-Agent — ⚠️ Warning
 
-**Overall score: Warning** — dormant for 8 weeks (last commit 2026-04-06); no automated tests runnable from CLI; large binaries tracked in git still unaddressed.
+**Overall score: Warning** — dormant for 9 weeks (last commit ~2026-04-06); no automated tests runnable from CLI; large binaries tracked in git still unaddressed (9th week).
 
 ### 1. Stale Branches
+
 No stale merged branches. Only `main` exists locally and on `origin`. ✅
 
 > HEAD is detached at `refs/heads/main` — same commit as `origin/main` (`d6d3f3f`).
 
 ### 2. Dependency Health
+
 No standard package manifest (`Package.swift`, `package.json`, `requirements.txt`, `pyproject.toml`) at repo root. Pure Xcode project (`.xcodeproj`) — dependencies managed through Xcode's SPM integration.
 
 ⚠️ Cannot audit from CLI. Manually verify in **Xcode → File → Packages → Update to Latest Package Versions**.
 
 ### 3. Code Quality — TODO / FIXME / HACK
+
 ```
-Count: 0 across all 104 .swift source files
+Count: 0 across all .swift source files
 ```
 ✅ No technical debt markers found.
 
 ### 4. Test Status
-No `XCTest` target detectable from CLI. No `swift test`-compatible `Package.swift` present. `swift` / `xcodebuild` unavailable in this Linux environment.
 
-⚠️ **No tests can be run automatically.** 8th week with no progress on this.
+No `XCTest` target detectable from CLI. No `swift test`-compatible `Package.swift` present. `xcodebuild` unavailable in this Linux environment.
+
+⚠️ **No tests can be run automatically** — 9th week with no progress on this.
 
 **Recommendation:** Add a GitHub Actions macOS workflow:
 ```yaml
@@ -118,7 +125,7 @@ No `XCTest` target detectable from CLI. No `swift test`-compatible `Package.swif
 |---|---|
 | Uncommitted changes | ✅ None |
 | Stashes | ✅ None |
-| Large binary files in git | ⚠️ ~4.8 MB tracked — 8 weeks open |
+| Large binary files in git | ⚠️ ~4.8 MB tracked — **9th week open** |
 
 **Large files tracked directly in git:**
 
@@ -128,8 +135,8 @@ No `XCTest` target detectable from CLI. No `swift test`-compatible `Package.swif
 | `Dockwright/Resources/Models/hey_jarvis_v0.1.onnx` | 1.3 MB |
 | `Dockwright/Resources/Models/embedding_model.onnx` | 1.3 MB |
 | `Dockwright/Resources/Models/melspectrogram.onnx` | 1.1 MB |
-| `assets/screenshot-empty.png` | 664 KB |
-| `assets/screenshot-chat.png` | 600 KB |
+| `assets/screenshot-empty.png` | 659 KB |
+| `assets/screenshot-chat.png` | 599 KB |
 
 These inflate clone size and git history. Migrate to Git LFS: `git lfs track "*.onnx" "*.mov"`.
 
@@ -142,7 +149,7 @@ d6d3f3f chore: update UIAutomationTool
 0837d7b docs: add optional sudo setup for system control
 ```
 
-Last commit: **2026-04-06** — 8 weeks without activity. Consider archiving or planning a maintenance sprint.
+Last commit: **~2026-04-06** — 9 weeks without activity. Consider archiving or planning a maintenance sprint.
 
 ---
 
@@ -150,10 +157,10 @@ Last commit: **2026-04-06** — 8 weeks without activity. Consider archiving or 
 
 | Priority | Age | Repo | Action |
 |---|---|---|---|
-| High | wk 5 | agentlenz | `npm install && npm update` in `dashboard/` — bump next, react, react-dom, @tanstack/react-query |
-| Medium | wk 8 | agentlenz | `git rm -r --cached '**/__pycache__/'` — untrack committed bytecode files |
-| Medium | wk 8 | agentlenz | Fix `EventClient.flush` atexit guard — `sdk/src/agentlenz/client.py:46` |
-| Medium | wk 8 | agentlenz | Add dashboard unit test suite (e.g. Vitest) |
-| Medium | wk 8 | agentlenz | Push unpushed standup commit to `origin/main` |
-| Medium | wk 8 | DockWright-MacOS-Agent | Add `XCTest` target + GitHub Actions macOS `xcodebuild test` workflow |
-| Low | wk 8 | DockWright-MacOS-Agent | Migrate ONNX models + `demo.mov` to Git LFS (`git lfs track "*.onnx" "*.mov"`) |
+| **High** | new | agentlenz | Delete stale remote branch: `git push origin --delete standup-2026-05-27` |
+| **High** | wk 6 | agentlenz | `npm install && npm update` in `dashboard/` — bump next, react, react-dom, @tanstack/react-query |
+| Medium | wk 9 | agentlenz | `git rm -r --cached '**/__pycache__/'` — untrack committed bytecode files |
+| Medium | wk 9 | agentlenz | Fix `EventClient.flush` atexit guard — `sdk/src/agentlenz/client.py:46` |
+| Medium | wk 9 | agentlenz | Add dashboard unit test suite (e.g. Vitest) |
+| Medium | wk 9 | DockWright-MacOS-Agent | Add `XCTest` target + GitHub Actions macOS `xcodebuild test` workflow |
+| Low | wk 9 | DockWright-MacOS-Agent | Migrate ONNX models + `demo.mov` to Git LFS (`git lfs track "*.onnx" "*.mov"`) |
