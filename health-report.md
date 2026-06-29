@@ -1,187 +1,165 @@
-# Weekly Health Report — 2026-06-22
+# Weekly Health Report — 2026-06-29
 
-> Generated automatically. Repos analysed: `agentlenz`, `DockWright-MacOS-Agent`.
+> Generated automatically. Repos analysed: `adelelo13/agentlenz`, `adelelo13/dockwright-macos-agent`.
 
 ---
 
-## agentlenz — ⚠️ Warning
+## Summary
 
-**Overall score: Warning** — no stale branches this week; dashboard dependencies not installed (npm packages all MISSING); 50 compiled bytecode files still tracked in git (10th week carry-over); test suite cannot run (pytest not installed in environment); no test suite for dashboard.
+| Repo | Health | Key Issues |
+|------|--------|------------|
+| agentlenz | ⚠️ Warning | Dashboard `node_modules` missing; `.pyc` files tracked in git |
+| dockwright-macos-agent | ⚠️ Warning | Large binaries in git (4 MB+ ML models + video); no test suite; 3 months since last commit |
+
+---
+
+## `adelelo13/agentlenz`
+
+**Overall: ⚠️ Warning**
 
 ### 1. Stale Branches
 
-| Branch | Status |
-|---|---|
-| None found | ✅ |
-
-`git branch -a --merged main` returns only `main` and `remotes/origin/main`. Previous week's stale branch (`standup-2026-05-27`) appears to have been removed. ✅
-
-> ⚠️ HEAD is detached from `refs/heads/main` — same commit as `origin/main`. Not a blocker but unusual for a cloned repo.
+No stale merged branches. Only `main` exists locally and on origin. Clean.
 
 ### 2. Dependency Health
 
-| Ecosystem | File | Status |
-|---|---|---|
-| Python (sdk) | `sdk/pyproject.toml` | ⚠️ Cannot verify — `pip`/packages not installed in environment |
-| Python (backend) | `backend/pyproject.toml` | ⚠️ Cannot verify — `pip`/packages not installed in environment |
-| Node / npm | `dashboard/package.json` | ⚠️ All packages MISSING (node_modules not installed) — outdated versions confirmed |
+**Backend (`backend/pyproject.toml`):**
 
-**Dashboard pinned versions (carry-over — 7th week unapplied):**
+| Package | Pinned Constraint | Status |
+|---------|-------------------|--------|
+| fastapi | `>=0.115` | No lockfile; not checked |
+| uvicorn | `>=0.32` | No lockfile; not checked |
+| sqlalchemy | `>=2.0` | No lockfile; not checked |
+| asyncpg | `>=0.30` | No lockfile; not checked |
+| alembic | `>=1.14` | No lockfile; not checked |
+| pydantic | `>=2.0` | No lockfile; not checked |
 
-| Package | Pinned | Latest | Status |
-|---------|--------|--------|--------|
-| `next` | 16.2.1 | 16.2.9 | ⚠️ patch update available |
-| `react` | 19.2.4 | 19.2.7 | ⚠️ patch update available |
-| `react-dom` | 19.2.4 | 19.2.7 | ⚠️ patch update available |
-| `@tanstack/react-query` | ^5.95.1 | 5.101.0 | ⚠️ minor update available |
-| `recharts` | ^3.8.0 | 3.8.1 | ✅ satisfied |
-| `npm` itself | 10.9.7 | 11.17.0 | ⚠️ major update available |
+> **Note:** Backend has no lockfile (no `requirements.lock` or `uv.lock`). Builds are non-reproducible.
 
-> Run `cd dashboard && npm install && npm update` to apply. Also consider `npm install -g npm@11.17.0`.
+**SDK (`sdk/pyproject.toml`):**
 
-**SDK declared dependencies** (versions unverified, packages not installed):
-- `httpx>=0.27`, `pydantic>=2.0`
-- Optional: `anthropic>=0.40`, `openai>=1.50`
+| Package | Pinned Constraint |
+|---------|-------------------|
+| httpx | `>=0.27` |
+| pydantic | `>=2.0` |
 
-**Backend declared dependencies** (versions unverified):
-- `fastapi>=0.115`, `uvicorn[standard]>=0.32`, `sqlalchemy[asyncio]>=2.0`, `asyncpg>=0.30`, `alembic>=1.14`, `pydantic>=2.0`, `pydantic-settings>=2.0`, `psycopg2-binary>=2.9`
+**Dashboard (`dashboard/package.json`) — ⚠️ Node modules not installed:**
 
-### 3. Code Quality — TODO / FIXME / HACK
+`npm install` has never been run in this environment. All dependencies are UNMET. Notable version drift (based on `npm outdated` against `package.json`):
+
+| Package | Wanted | Latest | Drift |
+|---------|--------|--------|-------|
+| next | 16.2.1 | 16.2.9 | Minor |
+| react | 19.2.4 | 19.2.7 | Minor |
+| react-dom | 19.2.4 | 19.2.7 | Minor |
+| recharts | ^3.8.0 | 3.9.0 | Minor |
+| @tanstack/react-query | ^5.95.1 | 5.101.2 | Minor |
+
+All updates are minor/patch — safe to upgrade.
+
+### 3. Code Quality
 
 ```
-Count: 0 across all .py, .ts, .js, .tsx source files
+TODO / FIXME / HACK count: 0
 ```
-✅ No technical debt markers found.
+
+Zero markers across all `.py`, `.ts`, `.tsx`, `.js` files. Excellent.
 
 ### 4. Test Status
 
-| Suite | Command | Result |
-|---|---|---|
-| SDK | `cd sdk && python3 -m pytest -q` | ❌ Cannot run — `No module named pytest` |
-| Backend | `cd backend && python3 -m pytest -q` | ❌ Cannot run — `No module named pytest` |
-| Dashboard | — | ⚠️ No `test` script in `package.json` (10th week) |
+| Suite | Result |
+|-------|--------|
+| `sdk` (pytest) | ✅ 25 passed, 1 skipped |
+| `backend` (pytest) | ✅ 17 passed |
+| `dashboard` | ⚠️ No test suite detected |
 
-> Packages need to be installed before tests can run. Recommend adding a CI step that runs `pip install -e sdk[dev] && pytest` and `pip install -e backend[dev] && pytest`.
+SDK produces a benign atexit warning (`RuntimeError: Call agentlenz.init() before using AgentLenz`) — not a test failure, but worth suppressing in CI.
 
 ### 5. Git Hygiene
 
 | Check | Status |
-|---|---|
-| Uncommitted changes | ✅ None |
+|-------|--------|
+| Uncommitted changes | ✅ Clean |
 | Stashes | ✅ None |
-| Large tracked files | ✅ Only `dashboard/package-lock.json` (240 KB) — expected |
-| Compiled bytecode tracked | ⚠️ 50 `__pycache__/*.pyc` files committed — **10th week open** |
-| Unpushed commits | ✅ None |
+| HEAD state | ⚠️ Detached from `refs/heads/main` |
+| Commits this week | 5 (standup files) |
+| Last commit | 2026-06-26 |
 
-> `.gitignore` already contains `**/__pycache__/` and `**/*.pyc` — these files were committed before the rule was added and must be explicitly removed from the index.
+**⚠️ Issue: `.pyc` files tracked in git.** The largest tracked files include compiled Python bytecode:
 
-**Action required (carry-over — 10th week):**
-```bash
-git rm -r --cached '**/__pycache__/' '**/*.pyc'
-git commit -m "chore: untrack committed bytecode files"
+```
+sdk/tests/__pycache__/test_spans.cpython-314-pytest-9.0.2.pyc   (9.6 KB)
+sdk/tests/__pycache__/test_spans.cpython-312-pytest-9.0.2.pyc   (8.8 KB)
+sdk/tests/__pycache__/test_budget.cpython-312-pytest-9.0.2.pyc  (8.4 KB)
 ```
 
-### Recent Activity
-```
-d756937 standup: 2026-06-19   ← HEAD (3 days ago)
-7ad8ad6 standup: 2026-06-18
-00b76c5 standup: 2026-06-12
-dd240c5 standup: 2026-06-11
-47c7389 standup: 2026-06-10
-f6a4009 standup: 2026-06-09
-f3085ce health: weekly report 2026-06-08
-b915563 standup: 2026-06-08
-```
-
-Standup cadence is active. No feature/fix commits visible in recent history.
+These should be added to `.gitignore` and removed from the repository.
 
 ---
 
-## DockWright-MacOS-Agent — ⚠️ Warning
+## `adelelo13/dockwright-macos-agent`
 
-**Overall score: Warning** — dormant for ~11 weeks (last commit 2026-04-06); large binary assets committed to git (~5 MB); no automated tests; no SPM dependency manifest to audit.
+**Overall: ⚠️ Warning**
 
 ### 1. Stale Branches
 
-No stale merged branches. Only `main` exists locally and on `origin`. ✅
-
-> ⚠️ HEAD is detached at `refs/heads/main` — same commit as `origin/main` (`d6d3f3f`). Not a blocker.
+No stale merged branches. Only `main` exists locally and on origin. Clean.
 
 ### 2. Dependency Health
 
-No standard package manifest (`Package.swift`, `package.json`, `requirements.txt`, `pyproject.toml`) found. Pure Xcode project — Swift Package Manager dependencies managed inside `.xcodeproj`.
+Pure Apple-framework Swift project (Xcode). No SPM packages, no `Package.swift`, no third-party dependency manager in use. N/A.
 
-**104 Swift source files** across the project.
-
-⚠️ Cannot audit from CLI. Manually verify in **Xcode → File → Packages → Update to Latest Package Versions**.
-
-### 3. Code Quality — TODO / FIXME / HACK
+### 3. Code Quality
 
 ```
-Count: 0 across all 104 .swift source files
+TODO / FIXME / HACK count: 0  (across 104 .swift files)
 ```
-✅ No technical debt markers found.
+
+Zero markers. Notably clean for a large codebase.
 
 ### 4. Test Status
 
-No `XCTest` target detectable from CLI. No `swift test`-compatible `Package.swift`. `xcodebuild` unavailable in this Linux container.
-
-⚠️ **No tests can be run automatically** — 10th week with no CI coverage.
-
-**Recommendation:** Add a GitHub Actions macOS workflow:
-```yaml
-- uses: actions/checkout@v4
-- run: xcodebuild test -scheme Dockwright -destination 'platform=macOS'
-```
+⚠️ No test suite detected. No Swift test target, no test files found. A project of this size and complexity (104 `.swift` files, multi-phase architecture) would benefit from at least unit tests for core logic (LLMService, CronEngine, ToolExecutor).
 
 ### 5. Git Hygiene
 
 | Check | Status |
-|---|---|
-| Uncommitted changes | ✅ None |
+|-------|--------|
+| Uncommitted changes | ✅ Clean |
 | Stashes | ✅ None |
-| Large binary files in git | ⚠️ ~5 MB tracked — **10th week open** |
+| HEAD state | ⚠️ Detached at `refs/heads/main` |
+| Commits this week | 0 |
+| Last commit | ~3 months ago (`d6d3f3f chore: update UIAutomationTool`) |
 
-**Large files tracked directly in git:**
+**⚠️ Issue: Large binary files tracked in git.** Several large binaries are committed directly (no Git LFS):
 
-| File | Size |
-|---|---|
-| `assets/demo.mov` | 1.5 MB |
-| `Dockwright/Resources/Models/hey_jarvis_v0.1.onnx` | 1.3 MB |
-| `Dockwright/Resources/Models/embedding_model.onnx` | 1.3 MB |
-| `Dockwright/Resources/Models/melspectrogram.onnx` | 1.1 MB |
-| `assets/screenshot-empty.png` | 664 KB |
-| `assets/screenshot-chat.png` | 600 KB |
-| `assets/demo.mp4` | 92 KB |
-
-Total tracked binary bloat: ~6.6 MB. Migrate to Git LFS:
-```bash
-git lfs install
-git lfs track "*.onnx" "*.mov" "*.mp4"
-git add .gitattributes
+```
+assets/demo.mov                                    1.5 MB  ← video file
+Dockwright/Resources/Models/embedding_model.onnx  1.3 MB
+Dockwright/Resources/Models/hey_jarvis_v0.1.onnx  1.3 MB
+Dockwright/Resources/Models/melspectrogram.onnx   1.1 MB
+assets/screenshot-empty.png                        676 KB
+assets/screenshot-chat.png                         614 KB
 ```
 
-### Recent Activity
-```
-d6d3f3f chore: update UIAutomationTool   ← HEAD (~11 weeks ago)
-645d4ab fix: UI automation element search, Unicode typing, and threading
-928f649 feat: whitelist safe sudo commands
-358b8d9 docs: simplify sudo instructions for non-devs
-0837d7b docs: add optional sudo setup for system control
-```
+Total: ~6.5 MB of binary blobs in git history. Recommend migrating to Git LFS or hosting ML models externally.
 
-Last commit: **2026-04-06** — 11 weeks without activity. Consider planning a maintenance sprint or archiving if no longer active.
+**⚠️ Issue: Repository is 3 months stale.** Last code change was `UIAutomationTool` update. Either development has moved elsewhere or the project is dormant.
 
 ---
 
-## Action Items Summary
+## Action Items
 
-| Priority | Age | Repo | Action |
-|---|---|---|---|
-| **High** | wk 7 | agentlenz | `cd dashboard && npm install && npm update` — bump next (→16.2.9), react/react-dom (→19.2.7), @tanstack/react-query (→5.101.0) |
-| **High** | wk 10 | agentlenz | `git rm -r --cached '**/__pycache__/'` — untrack 50 committed bytecode files |
-| Medium | — | agentlenz | Install dev dependencies in CI (`pip install -e sdk[dev] && pytest`) so tests can run |
-| Medium | wk 10 | agentlenz | Add dashboard unit test suite (e.g. Vitest or Jest) |
-| Medium | wk 10 | DockWright-MacOS-Agent | Add `XCTest` target + GitHub Actions macOS `xcodebuild test` workflow |
-| Low | wk 10 | DockWright-MacOS-Agent | Migrate ONNX models + video assets to Git LFS (saves ~6 MB clone weight) |
-| Low | — | DockWright-MacOS-Agent | Consider maintenance sprint or archival — 11 weeks dormant |
+### Immediate
+- [ ] **agentlenz**: Remove `.pyc` / `__pycache__` files from git, add `**/__pycache__/` and `**/*.pyc` to `.gitignore`
+- [ ] **agentlenz**: Run `npm install` in `dashboard/` and commit a lockfile
+
+### Short-term
+- [ ] **agentlenz**: Add a lockfile (`uv.lock` or `requirements.lock`) for backend and SDK to make builds reproducible
+- [ ] **agentlenz**: Suppress the atexit `RuntimeError` in SDK tests (or fix `EventClient.flush` to check init state)
+- [ ] **agentlenz**: Bump minor dashboard deps (`next`, `react`, `recharts`, `@tanstack/react-query`)
+
+### Long-term
+- [ ] **dockwright**: Migrate `.onnx` models and `demo.mov` to Git LFS or external storage
+- [ ] **dockwright**: Add a test suite (Swift testing target) for at least `CronEngine`, `LLMService`, and `ToolExecutor`
+- [ ] **dockwright**: Confirm whether development is active or project is on hold
