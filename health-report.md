@@ -1,4 +1,4 @@
-# Weekly Health Report — 2026-06-29
+# Weekly Health Report — 2026-07-06
 
 > Generated automatically. Repos analysed: `adelelo13/agentlenz`, `adelelo13/dockwright-macos-agent`.
 
@@ -8,8 +8,8 @@
 
 | Repo | Health | Key Issues |
 |------|--------|------------|
-| agentlenz | ⚠️ Warning | Dashboard `node_modules` missing; `.pyc` files tracked in git |
-| dockwright-macos-agent | ⚠️ Warning | Large binaries in git (4 MB+ ML models + video); no test suite; 3 months since last commit |
+| agentlenz | ⚠️ Warning | `.pyc` files still tracked in git (unresolved 2nd week); dashboard `node_modules` missing; pytest not available in environment |
+| dockwright-macos-agent | ⚠️ Warning | Large binaries in git (6.5 MB); no test suite; HEAD detached; 0 commits this week |
 
 ---
 
@@ -27,14 +27,14 @@ No stale merged branches. Only `main` exists locally and on origin. Clean.
 
 | Package | Pinned Constraint | Status |
 |---------|-------------------|--------|
-| fastapi | `>=0.115` | No lockfile; not checked |
-| uvicorn | `>=0.32` | No lockfile; not checked |
-| sqlalchemy | `>=2.0` | No lockfile; not checked |
-| asyncpg | `>=0.30` | No lockfile; not checked |
-| alembic | `>=1.14` | No lockfile; not checked |
-| pydantic | `>=2.0` | No lockfile; not checked |
+| fastapi | `>=0.115` | No lockfile; version not pinned |
+| uvicorn | `>=0.32` | No lockfile; version not pinned |
+| sqlalchemy | `>=2.0` | No lockfile; version not pinned |
+| asyncpg | `>=0.30` | No lockfile; version not pinned |
+| alembic | `>=1.14` | No lockfile; version not pinned |
+| pydantic | `>=2.0` | No lockfile; version not pinned |
 
-> **Note:** Backend has no lockfile (no `requirements.lock` or `uv.lock`). Builds are non-reproducible.
+> **Note:** Backend still has no lockfile (`uv.lock` / `requirements.lock`). Builds are non-reproducible. Flagged last week — still unresolved.
 
 **SDK (`sdk/pyproject.toml`):**
 
@@ -45,17 +45,17 @@ No stale merged branches. Only `main` exists locally and on origin. Clean.
 
 **Dashboard (`dashboard/package.json`) — ⚠️ Node modules not installed:**
 
-`npm install` has never been run in this environment. All dependencies are UNMET. Notable version drift (based on `npm outdated` against `package.json`):
+`npm install` has not been run in this environment. All dependencies are UNMET. Version drift (from `npm outdated`):
 
 | Package | Wanted | Latest | Drift |
 |---------|--------|--------|-------|
-| next | 16.2.1 | 16.2.9 | Minor |
-| react | 19.2.4 | 19.2.7 | Minor |
-| react-dom | 19.2.4 | 19.2.7 | Minor |
-| recharts | ^3.8.0 | 3.9.0 | Minor |
+| next | 16.2.1 | 16.2.10 | Minor patch (+1 since last week) |
+| react | 19.2.4 | 19.2.7 | Minor patch |
+| react-dom | 19.2.4 | 19.2.7 | Minor patch |
+| recharts | ^3.8.0 | 3.9.2 | Minor |
 | @tanstack/react-query | ^5.95.1 | 5.101.2 | Minor |
 
-All updates are minor/patch — safe to upgrade.
+All updates are minor/patch — safe to upgrade. `next` moved from 16.2.9 → 16.2.10 since last week.
 
 ### 3. Code Quality
 
@@ -63,17 +63,17 @@ All updates are minor/patch — safe to upgrade.
 TODO / FIXME / HACK count: 0
 ```
 
-Zero markers across all `.py`, `.ts`, `.tsx`, `.js` files. Excellent.
+Zero markers across all `.py`, `.ts`, `.tsx`, `.js` files. Excellent — unchanged from last week.
 
 ### 4. Test Status
 
 | Suite | Result |
 |-------|--------|
-| `sdk` (pytest) | ✅ 25 passed, 1 skipped |
-| `backend` (pytest) | ✅ 17 passed |
+| `backend` (pytest) | ⚠️ Could not run — `pytest` not installed in this environment |
+| `sdk` (pytest) | ⚠️ Could not run — `pytest` not installed in this environment |
 | `dashboard` | ⚠️ No test suite detected |
 
-SDK produces a benign atexit warning (`RuntimeError: Call agentlenz.init() before using AgentLenz`) — not a test failure, but worth suppressing in CI.
+> Test files exist (`backend/tests/`, `sdk/tests/`) — this is an environment issue, not a missing test suite. Test results from last week (25 sdk + 17 backend passed) are the last known good state.
 
 ### 5. Git Hygiene
 
@@ -81,19 +81,21 @@ SDK produces a benign atexit warning (`RuntimeError: Call agentlenz.init() befor
 |-------|--------|
 | Uncommitted changes | ✅ Clean |
 | Stashes | ✅ None |
-| HEAD state | ⚠️ Detached from `refs/heads/main` |
-| Commits this week | 5 (standup files) |
-| Last commit | 2026-06-26 |
+| HEAD state | ✅ On `main` |
+| Commits this week | 6 (standup files: 2026-06-30 through 2026-07-06) |
+| Last commit | 2026-07-06 |
 
-**⚠️ Issue: `.pyc` files tracked in git.** The largest tracked files include compiled Python bytecode:
+**⚠️ Issue: `.pyc` files still tracked in git (2nd week).** `.gitignore` was correctly updated to include `**/__pycache__/` and `**/*.pyc`, but the files were never removed from the git index. The cache entries persist:
 
 ```
-sdk/tests/__pycache__/test_spans.cpython-314-pytest-9.0.2.pyc   (9.6 KB)
-sdk/tests/__pycache__/test_spans.cpython-312-pytest-9.0.2.pyc   (8.8 KB)
-sdk/tests/__pycache__/test_budget.cpython-312-pytest-9.0.2.pyc  (8.4 KB)
+backend/alembic/versions/__pycache__/55d8cfecf4d3_initial_schema.cpython-312.pyc
+backend/src/agentlenz_api/__pycache__/__init__.cpython-312.pyc
+backend/src/agentlenz_api/__pycache__/auth.cpython-312.pyc
+backend/src/agentlenz_api/__pycache__/main.cpython-312.pyc
+... (and more)
 ```
 
-These should be added to `.gitignore` and removed from the repository.
+Fix: `git rm -r --cached '**/__pycache__' '**/*.pyc' && git commit -m "chore: remove tracked pyc files"`
 
 ---
 
@@ -103,7 +105,9 @@ These should be added to `.gitignore` and removed from the repository.
 
 ### 1. Stale Branches
 
-No stale merged branches. Only `main` exists locally and on origin. Clean.
+No stale merged branches. `main` is the only branch. Clean.
+
+> Note: HEAD is in detached state (`HEAD detached at refs/heads/main`) — this is a git checkout artifact in this environment, not an upstream issue.
 
 ### 2. Dependency Health
 
@@ -115,11 +119,13 @@ Pure Apple-framework Swift project (Xcode). No SPM packages, no `Package.swift`,
 TODO / FIXME / HACK count: 0  (across 104 .swift files)
 ```
 
-Zero markers. Notably clean for a large codebase.
+Zero markers. Notably clean for a codebase of this size.
 
 ### 4. Test Status
 
-⚠️ No test suite detected. No Swift test target, no test files found. A project of this size and complexity (104 `.swift` files, multi-phase architecture) would benefit from at least unit tests for core logic (LLMService, CronEngine, ToolExecutor).
+⚠️ No test suite detected. No Swift test target found. A 104-file multi-phase macOS app (LLMService, CronEngine, ToolExecutor, VoiceService, etc.) has zero test coverage. This is a persistent risk — core logic changes can't be validated automatically.
+
+Recommended minimum test targets: `CronEngine` (cron expression parsing), `LLMService` (SSE parsing), `ToolExecutor` (argument dispatch).
 
 ### 5. Git Hygiene
 
@@ -127,39 +133,38 @@ Zero markers. Notably clean for a large codebase.
 |-------|--------|
 | Uncommitted changes | ✅ Clean |
 | Stashes | ✅ None |
-| HEAD state | ⚠️ Detached at `refs/heads/main` |
+| HEAD state | ⚠️ Detached at `refs/heads/main` (environment artifact) |
 | Commits this week | 0 |
-| Last commit | ~3 months ago (`d6d3f3f chore: update UIAutomationTool`) |
+| Last commit | `d6d3f3f chore: update UIAutomationTool` (prior to this week) |
 
-**⚠️ Issue: Large binary files tracked in git.** Several large binaries are committed directly (no Git LFS):
+**⚠️ Issue: Large binary files tracked in git (no LFS) — unchanged from last week:**
 
 ```
-assets/demo.mov                                    1.5 MB  ← video file
+assets/demo.mov                                    1.5 MB  ← video
 Dockwright/Resources/Models/embedding_model.onnx  1.3 MB
-Dockwright/Resources/Models/hey_jarvis_v0.1.onnx  1.3 MB
-Dockwright/Resources/Models/melspectrogram.onnx   1.1 MB
-assets/screenshot-empty.png                        676 KB
-assets/screenshot-chat.png                         614 KB
+Dockwright/Resources/Models/hey_jarvis_v0.1.onnx  1.2 MB
+Dockwright/Resources/Models/melspectrogram.onnx   1.0 MB
+assets/screenshot-empty.png                        644 KB
+assets/screenshot-chat.png                         585 KB
 ```
 
-Total: ~6.5 MB of binary blobs in git history. Recommend migrating to Git LFS or hosting ML models externally.
-
-**⚠️ Issue: Repository is 3 months stale.** Last code change was `UIAutomationTool` update. Either development has moved elsewhere or the project is dormant.
+Total: ~6.3 MB of binary blobs in git history. Recommend migrating to Git LFS or hosting ML models externally.
 
 ---
 
 ## Action Items
 
-### Immediate
-- [ ] **agentlenz**: Remove `.pyc` / `__pycache__` files from git, add `**/__pycache__/` and `**/*.pyc` to `.gitignore`
-- [ ] **agentlenz**: Run `npm install` in `dashboard/` and commit a lockfile
+### Immediate (overdue from last week)
+- [ ] **agentlenz**: Remove tracked `.pyc` / `__pycache__` files from git index:
+  ```bash
+  git rm -r --cached 'backend/**/__pycache__' 'sdk/**/__pycache__' && git commit -m "chore: remove tracked pyc files"
+  ```
 
 ### Short-term
-- [ ] **agentlenz**: Add a lockfile (`uv.lock` or `requirements.lock`) for backend and SDK to make builds reproducible
-- [ ] **agentlenz**: Suppress the atexit `RuntimeError` in SDK tests (or fix `EventClient.flush` to check init state)
-- [ ] **agentlenz**: Bump minor dashboard deps (`next`, `react`, `recharts`, `@tanstack/react-query`)
+- [ ] **agentlenz**: Run `npm install` in `dashboard/` and commit a lockfile
+- [ ] **agentlenz**: Add `uv.lock` or `requirements.lock` for backend and SDK (reproducible builds)
+- [ ] **agentlenz**: Bump dashboard deps (`next 16.2.1 → 16.2.10`, `react 19.2.4 → 19.2.7`)
 
 ### Long-term
-- [ ] **dockwright**: Migrate `.onnx` models and `demo.mov` to Git LFS or external storage
-- [ ] **dockwright**: Add a test suite (Swift testing target) for at least `CronEngine`, `LLMService`, and `ToolExecutor`
-- [ ] **dockwright**: Confirm whether development is active or project is on hold
+- [ ] **dockwright**: Migrate `.onnx` models and `demo.mov` to Git LFS or external hosting
+- [ ] **dockwright**: Add Swift test target covering `CronEngine`, `LLMService`, `ToolExecutor`
