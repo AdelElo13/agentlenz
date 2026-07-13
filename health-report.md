@@ -1,4 +1,4 @@
-# Weekly Health Report — 2026-07-06
+# Weekly Health Report — 2026-07-13
 
 > Generated automatically. Repos analysed: `adelelo13/agentlenz`, `adelelo13/dockwright-macos-agent`.
 
@@ -8,8 +8,8 @@
 
 | Repo | Health | Key Issues |
 |------|--------|------------|
-| agentlenz | ⚠️ Warning | `.pyc` files still tracked in git (unresolved 2nd week); dashboard `node_modules` missing; pytest not available in environment |
-| dockwright-macos-agent | ⚠️ Warning | Large binaries in git (6.5 MB); no test suite; HEAD detached; 0 commits this week |
+| agentlenz | ⚠️ Warning | `.pyc` files tracked in git (**3rd week unresolved**); Next.js 2 high CVEs; no backend lockfile |
+| dockwright-macos-agent | ⚠️ Warning | 0 commits in 3+ months; no test suite; large binaries in git (no LFS) |
 
 ---
 
@@ -25,37 +25,36 @@ No stale merged branches. Only `main` exists locally and on origin. Clean.
 
 **Backend (`backend/pyproject.toml`):**
 
-| Package | Pinned Constraint | Status |
-|---------|-------------------|--------|
-| fastapi | `>=0.115` | No lockfile; version not pinned |
-| uvicorn | `>=0.32` | No lockfile; version not pinned |
-| sqlalchemy | `>=2.0` | No lockfile; version not pinned |
-| asyncpg | `>=0.30` | No lockfile; version not pinned |
-| alembic | `>=1.14` | No lockfile; version not pinned |
-| pydantic | `>=2.0` | No lockfile; version not pinned |
+| Package | Constraint | Status |
+|---------|-----------|--------|
+| fastapi | `>=0.115` | No lockfile; non-reproducible |
+| uvicorn | `>=0.32` | No lockfile |
+| sqlalchemy | `>=2.0` | No lockfile |
+| asyncpg | `>=0.30` | No lockfile |
+| alembic | `>=1.14` | No lockfile |
+| pydantic | `>=2.0` | No lockfile |
 
-> **Note:** Backend still has no lockfile (`uv.lock` / `requirements.lock`). Builds are non-reproducible. Flagged last week — still unresolved.
+> **No lockfile** (`uv.lock` / `requirements.lock`) — flagged 3 consecutive weeks. Builds are non-reproducible.
 
 **SDK (`sdk/pyproject.toml`):**
 
-| Package | Pinned Constraint |
-|---------|-------------------|
+| Package | Constraint |
+|---------|-----------|
 | httpx | `>=0.27` |
 | pydantic | `>=2.0` |
 
-**Dashboard (`dashboard/package.json`) — ⚠️ Node modules not installed:**
+No lockfile here either.
 
-`npm install` has not been run in this environment. All dependencies are UNMET. Version drift (from `npm outdated`):
+**Dashboard (`dashboard/package.json`) — ⚠️ 6 npm vulnerabilities (2 high):**
 
-| Package | Wanted | Latest | Drift |
-|---------|--------|--------|-------|
-| next | 16.2.1 | 16.2.10 | Minor patch (+1 since last week) |
-| react | 19.2.4 | 19.2.7 | Minor patch |
-| react-dom | 19.2.4 | 19.2.7 | Minor patch |
-| recharts | ^3.8.0 | 3.9.2 | Minor |
-| @tanstack/react-query | ^5.95.1 | 5.101.2 | Minor |
+| Package | Pinned Version | Vulnerability |
+|---------|---------------|---------------|
+| next | 16.2.1 | **HIGH** — DoS via Server Components, middleware proxy bypass, cache poisoning (13 CVEs) |
+| @babel/core | (transitive) | **HIGH** — Arbitrary File Read via sourceMappingURL comment |
+| brace-expansion | (transitive) | Moderate — DoS via zero-step sequence |
+| js-yaml | (transitive) | Moderate — DoS via merge key aliases |
 
-All updates are minor/patch — safe to upgrade. `next` moved from 16.2.9 → 16.2.10 since last week.
+`npm audit fix` can fix most; `next` requires `--force` (major bump). Next.js vulnerabilities are extensive — upgrade path should be evaluated carefully.
 
 ### 3. Code Quality
 
@@ -63,17 +62,19 @@ All updates are minor/patch — safe to upgrade. `next` moved from 16.2.9 → 16
 TODO / FIXME / HACK count: 0
 ```
 
-Zero markers across all `.py`, `.ts`, `.tsx`, `.js` files. Excellent — unchanged from last week.
+Zero markers across all `.py`, `.ts`, `.tsx`, `.js` files. Excellent — clean for three consecutive weeks.
 
 ### 4. Test Status
 
 | Suite | Result |
 |-------|--------|
-| `backend` (pytest) | ⚠️ Could not run — `pytest` not installed in this environment |
-| `sdk` (pytest) | ⚠️ Could not run — `pytest` not installed in this environment |
-| `dashboard` | ⚠️ No test suite detected |
+| `sdk` (pytest) | ✅ 25 passed, 1 skipped (0.09s) |
+| `backend` (pytest) | ⚠️ Not run — PostgreSQL not available in this environment |
+| `dashboard` | ⚠️ No test suite |
 
-> Test files exist (`backend/tests/`, `sdk/tests/`) — this is an environment issue, not a missing test suite. Test results from last week (25 sdk + 17 backend passed) are the last known good state.
+Skipped test: `test_sdk_sends_events_to_backend` — integration test requiring a live backend endpoint; expected.
+
+**⚠️ Atexit error in test runner:** `EventClient.flush()` throws `RuntimeError: Call agentlenz.init() before using AgentLenz` during teardown. Non-fatal (all 25 tests pass), but indicates the SDK client is partially initialized in tests without a corresponding `init()` call.
 
 ### 5. Git Hygiene
 
@@ -82,20 +83,18 @@ Zero markers across all `.py`, `.ts`, `.tsx`, `.js` files. Excellent — unchang
 | Uncommitted changes | ✅ Clean |
 | Stashes | ✅ None |
 | HEAD state | ✅ On `main` |
-| Commits this week | 6 (standup files: 2026-06-30 through 2026-07-06) |
-| Last commit | 2026-07-06 |
+| Commits this week | 3 (standup: Jul 8, 9, 10) |
+| Last commit | `be812db` 2026-07-10 |
 
-**⚠️ Issue: `.pyc` files still tracked in git (2nd week).** `.gitignore` was correctly updated to include `**/__pycache__/` and `**/*.pyc`, but the files were never removed from the git index. The cache entries persist:
+**⚠️ ESCALATED — `.pyc` / `__pycache__` files tracked in git (3rd consecutive week):**
 
+50 compiled Python files are still in the git index despite `.gitignore` covering them. The index was never cleaned after `.gitignore` was updated. This inflates repo size and causes spurious diffs.
+
+Fix (one command):
+```bash
+git rm -r --cached $(git ls-files | grep -E '\.pyc$|__pycache__')
+git commit -m "chore: remove tracked pyc files from index"
 ```
-backend/alembic/versions/__pycache__/55d8cfecf4d3_initial_schema.cpython-312.pyc
-backend/src/agentlenz_api/__pycache__/__init__.cpython-312.pyc
-backend/src/agentlenz_api/__pycache__/auth.cpython-312.pyc
-backend/src/agentlenz_api/__pycache__/main.cpython-312.pyc
-... (and more)
-```
-
-Fix: `git rm -r --cached '**/__pycache__' '**/*.pyc' && git commit -m "chore: remove tracked pyc files"`
 
 ---
 
@@ -107,11 +106,11 @@ Fix: `git rm -r --cached '**/__pycache__' '**/*.pyc' && git commit -m "chore: re
 
 No stale merged branches. `main` is the only branch. Clean.
 
-> Note: HEAD is in detached state (`HEAD detached at refs/heads/main`) — this is a git checkout artifact in this environment, not an upstream issue.
+> HEAD is detached (`HEAD detached at refs/heads/main`) — environment checkout artifact, not an upstream issue.
 
 ### 2. Dependency Health
 
-Pure Apple-framework Swift project (Xcode). No SPM packages, no `Package.swift`, no third-party dependency manager in use. N/A.
+Pure Apple-framework Swift project. No SPM packages, no third-party dependencies. N/A.
 
 ### 3. Code Quality
 
@@ -119,13 +118,13 @@ Pure Apple-framework Swift project (Xcode). No SPM packages, no `Package.swift`,
 TODO / FIXME / HACK count: 0  (across 104 .swift files)
 ```
 
-Zero markers. Notably clean for a codebase of this size.
+Zero markers. Notably clean for a 104-file macOS application.
 
 ### 4. Test Status
 
-⚠️ No test suite detected. No Swift test target found. A 104-file multi-phase macOS app (LLMService, CronEngine, ToolExecutor, VoiceService, etc.) has zero test coverage. This is a persistent risk — core logic changes can't be validated automatically.
+⚠️ **No test suite.** No Swift test target found in the project. A 104-file macOS agent (LLMService, CronEngine, ToolExecutor, VoiceService, ScreenCapture, BrowserTabWatcher, etc.) has zero automated test coverage.
 
-Recommended minimum test targets: `CronEngine` (cron expression parsing), `LLMService` (SSE parsing), `ToolExecutor` (argument dispatch).
+Minimum recommended targets: `CronEngine` (cron expression parsing), `LLMService` (SSE streaming/parsing), `ToolExecutor` (argument dispatch + security blocking).
 
 ### 5. Git Hygiene
 
@@ -133,38 +132,51 @@ Recommended minimum test targets: `CronEngine` (cron expression parsing), `LLMSe
 |-------|--------|
 | Uncommitted changes | ✅ Clean |
 | Stashes | ✅ None |
-| HEAD state | ⚠️ Detached at `refs/heads/main` (environment artifact) |
+| HEAD state | ⚠️ Detached (environment artifact) |
 | Commits this week | 0 |
-| Last commit | `d6d3f3f chore: update UIAutomationTool` (prior to this week) |
+| Last commit | `d6d3f3f` 2026-04-06 — 98 days ago |
 
-**⚠️ Issue: Large binary files tracked in git (no LFS) — unchanged from last week:**
+**⚠️ ESCALATED — No commits in 3+ months.** Last activity was April 6, 2026. If this repo is in active development, work may be happening on an untracked branch or locally without pushes.
+
+**⚠️ Large binary files tracked without Git LFS (unchanged from prior reports):**
 
 ```
-assets/demo.mov                                    1.5 MB  ← video
+assets/demo.mov                                    1.5 MB
 Dockwright/Resources/Models/embedding_model.onnx  1.3 MB
 Dockwright/Resources/Models/hey_jarvis_v0.1.onnx  1.2 MB
 Dockwright/Resources/Models/melspectrogram.onnx   1.0 MB
-assets/screenshot-empty.png                        644 KB
-assets/screenshot-chat.png                         585 KB
+assets/screenshot-empty.png                         648 KB
+assets/screenshot-chat.png                          600 KB
+assets/demo.mp4                                      92 KB
 ```
 
-Total: ~6.3 MB of binary blobs in git history. Recommend migrating to Git LFS or hosting ML models externally.
+Total: ~6.4 MB of binary blobs in git history (not in LFS). Every clone fetches these in full.
 
 ---
 
 ## Action Items
 
-### Immediate (overdue from last week)
-- [ ] **agentlenz**: Remove tracked `.pyc` / `__pycache__` files from git index:
+### Overdue (flagged 3 consecutive weeks — action needed now)
+- [ ] **agentlenz**: Remove tracked `.pyc` / `__pycache__` from git index:
   ```bash
-  git rm -r --cached 'backend/**/__pycache__' 'sdk/**/__pycache__' && git commit -m "chore: remove tracked pyc files"
+  git rm -r --cached $(git ls-files | grep -E '\.pyc$|__pycache__')
+  git commit -m "chore: remove tracked pyc files from index"
   ```
 
+### High priority
+- [ ] **agentlenz dashboard**: Evaluate Next.js upgrade path — 13 CVEs in current version (16.2.1); `npm audit fix --force` required (major bump)
+- [ ] **agentlenz**: Fix atexit `RuntimeError` in `EventClient.flush()` — guard `flush()` with a config-exists check rather than raising
+- [ ] **agentlenz**: Add backend lockfile (`uv.lock`) for reproducible builds — 3rd week without one
+
 ### Short-term
-- [ ] **agentlenz**: Run `npm install` in `dashboard/` and commit a lockfile
-- [ ] **agentlenz**: Add `uv.lock` or `requirements.lock` for backend and SDK (reproducible builds)
-- [ ] **agentlenz**: Bump dashboard deps (`next 16.2.1 → 16.2.10`, `react 19.2.4 → 19.2.7`)
+- [ ] **agentlenz**: Verify backend test suite passes — tests exist in `backend/tests/` but require PostgreSQL; add a CI job or Docker compose setup
+- [ ] **agentlenz**: Add dashboard test suite (Vitest or Playwright)
 
 ### Long-term
+- [ ] **dockwright**: Investigate 3-month commit gap — confirm repo is still actively used
 - [ ] **dockwright**: Migrate `.onnx` models and `demo.mov` to Git LFS or external hosting
-- [ ] **dockwright**: Add Swift test target covering `CronEngine`, `LLMService`, `ToolExecutor`
+- [ ] **dockwright**: Add Swift test target covering core logic (`CronEngine`, `LLMService`, `ToolExecutor`)
+
+---
+
+*Report generated by automated health check · Next run: 2026-07-20*
