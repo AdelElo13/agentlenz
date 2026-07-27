@@ -1,4 +1,4 @@
-# Weekly Health Report — 2026-07-13
+# Weekly Health Report — 2026-07-27
 
 > Generated automatically. Repos analysed: `adelelo13/agentlenz`, `adelelo13/dockwright-macos-agent`.
 
@@ -8,8 +8,8 @@
 
 | Repo | Health | Key Issues |
 |------|--------|------------|
-| agentlenz | ⚠️ Warning | `.pyc` files tracked in git (**3rd week unresolved**); Next.js 2 high CVEs; no backend lockfile |
-| dockwright-macos-agent | ⚠️ Warning | 0 commits in 3+ months; no test suite; large binaries in git (no LFS) |
+| agentlenz | ⚠️ Warning | `.pyc` files tracked in git (**4th week unresolved**); Next.js CVEs outstanding; no backend lockfile |
+| dockwright-macos-agent | ⚠️ Warning | 0 commits in 113 days; no test suite; large binaries in git (no LFS) |
 
 ---
 
@@ -33,8 +33,9 @@ No stale merged branches. Only `main` exists locally and on origin. Clean.
 | asyncpg | `>=0.30` | No lockfile |
 | alembic | `>=1.14` | No lockfile |
 | pydantic | `>=2.0` | No lockfile |
+| psycopg2-binary | `>=2.9` | No lockfile |
 
-> **No lockfile** (`uv.lock` / `requirements.lock`) — flagged 3 consecutive weeks. Builds are non-reproducible.
+> **No lockfile** (`uv.lock` / `requirements.lock`) — flagged 4 consecutive weeks. Builds are non-reproducible. Add `uv lock` or `pip-compile` to CI.
 
 **SDK (`sdk/pyproject.toml`):**
 
@@ -45,16 +46,16 @@ No stale merged branches. Only `main` exists locally and on origin. Clean.
 
 No lockfile here either.
 
-**Dashboard (`dashboard/package.json`) — ⚠️ 6 npm vulnerabilities (2 high):**
+**Dashboard (`dashboard/package.json`) — ⚠️ CVEs outstanding:**
 
-| Package | Pinned Version | Vulnerability |
-|---------|---------------|---------------|
-| next | 16.2.1 | **HIGH** — DoS via Server Components, middleware proxy bypass, cache poisoning (13 CVEs) |
-| @babel/core | (transitive) | **HIGH** — Arbitrary File Read via sourceMappingURL comment |
+| Package | Pinned Version | Status |
+|---------|---------------|--------|
+| next | 16.2.1 | **HIGH** — DoS via Server Components, middleware proxy bypass, cache poisoning |
+| @babel/core | (transitive) | **HIGH** — Arbitrary File Read via sourceMappingURL |
 | brace-expansion | (transitive) | Moderate — DoS via zero-step sequence |
 | js-yaml | (transitive) | Moderate — DoS via merge key aliases |
 
-`npm audit fix` can fix most; `next` requires `--force` (major bump). Next.js vulnerabilities are extensive — upgrade path should be evaluated carefully.
+These CVEs were present in the last two reports and remain unresolved. Run `npm audit fix --force` in `dashboard/` (Next.js major bump required).
 
 ### 3. Code Quality
 
@@ -62,19 +63,19 @@ No lockfile here either.
 TODO / FIXME / HACK count: 0
 ```
 
-Zero markers across all `.py`, `.ts`, `.tsx`, `.js` files. Excellent — clean for three consecutive weeks.
+Zero markers across all `.py`, `.ts`, `.tsx`, `.js` files. Excellent — clean for four consecutive weeks.
 
 ### 4. Test Status
 
-| Suite | Result |
-|-------|--------|
-| `sdk` (pytest) | ✅ 25 passed, 1 skipped (0.09s) |
-| `backend` (pytest) | ⚠️ Not run — PostgreSQL not available in this environment |
-| `dashboard` | ⚠️ No test suite |
+| Suite | Files | Result |
+|-------|-------|--------|
+| `sdk` (pytest) | 10 test files | ⚠️ Cannot run — `pytest` and `httpx` not installed in this environment |
+| `backend` (pytest) | 6 test files | ⚠️ Cannot run — PostgreSQL not available in this environment |
+| `dashboard` | — | ⚠️ No test suite |
 
-Skipped test: `test_sdk_sends_events_to_backend` — integration test requiring a live backend endpoint; expected.
+Both test suites exist and are well-structured. The inability to run them is an environment constraint (no `pip install -e .[dev]` performed). Recommend adding a CI job (GitHub Actions) so tests run on push, making this a non-issue in the weekly check.
 
-**⚠️ Atexit error in test runner:** `EventClient.flush()` throws `RuntimeError: Call agentlenz.init() before using AgentLenz` during teardown. Non-fatal (all 25 tests pass), but indicates the SDK client is partially initialized in tests without a corresponding `init()` call.
+> **Note from Jul 13 report:** SDK teardown `RuntimeError: Call agentlenz.init() before using AgentLenz` in `EventClient.flush()` — status unknown; cannot re-verify without running tests.
 
 ### 5. Git Hygiene
 
@@ -83,17 +84,18 @@ Skipped test: `test_sdk_sends_events_to_backend` — integration test requiring 
 | Uncommitted changes | ✅ Clean |
 | Stashes | ✅ None |
 | HEAD state | ✅ On `main` |
-| Commits this week | 3 (standup: Jul 8, 9, 10) |
-| Last commit | `be812db` 2026-07-10 |
+| Commits this period (2 weeks) | 3 (standup: Jul 14, Jul 27; health: Jul 13) |
+| Last commit | `d70e490` 2026-07-27 |
 
-**⚠️ ESCALATED — `.pyc` / `__pycache__` files tracked in git (3rd consecutive week):**
+**⚠️ ESCALATED — `.pyc` / `__pycache__` files tracked in git (4th consecutive weekly report):**
 
-50 compiled Python files are still in the git index despite `.gitignore` covering them. The index was never cleaned after `.gitignore` was updated. This inflates repo size and causes spurious diffs.
+50 compiled Python files remain in the git index. The fix is a single command and takes under 60 seconds — this has been in the Action Items list since June:
 
-Fix (one command):
 ```bash
+cd /home/user/agentlenz
 git rm -r --cached $(git ls-files | grep -E '\.pyc$|__pycache__')
 git commit -m "chore: remove tracked pyc files from index"
+git push
 ```
 
 ---
@@ -110,7 +112,7 @@ No stale merged branches. `main` is the only branch. Clean.
 
 ### 2. Dependency Health
 
-Pure Apple-framework Swift project. No SPM packages, no third-party dependencies. N/A.
+Pure Apple-framework Swift project. No SPM packages, no third-party dependencies. **N/A.**
 
 ### 3. Code Quality
 
@@ -122,7 +124,7 @@ Zero markers. Notably clean for a 104-file macOS application.
 
 ### 4. Test Status
 
-⚠️ **No test suite.** No Swift test target found in the project. A 104-file macOS agent (LLMService, CronEngine, ToolExecutor, VoiceService, ScreenCapture, BrowserTabWatcher, etc.) has zero automated test coverage.
+⚠️ **No test suite.** No Swift test target found in the project. A 104-file macOS agent (LLMService, CronEngine, ToolExecutor, VoiceService, ScreenCaptureService, BrowserTabWatcher, etc.) has zero automated test coverage — unchanged from prior reports.
 
 Minimum recommended targets: `CronEngine` (cron expression parsing), `LLMService` (SSE streaming/parsing), `ToolExecutor` (argument dispatch + security blocking).
 
@@ -133,50 +135,51 @@ Minimum recommended targets: `CronEngine` (cron expression parsing), `LLMService
 | Uncommitted changes | ✅ Clean |
 | Stashes | ✅ None |
 | HEAD state | ⚠️ Detached (environment artifact) |
-| Commits this week | 0 |
-| Last commit | `d6d3f3f` 2026-04-06 — 98 days ago |
+| Commits this period (2 weeks) | 0 |
+| Last commit | `d6d3f3f` 2026-04-06 — **113 days ago** |
 
-**⚠️ ESCALATED — No commits in 3+ months.** Last activity was April 6, 2026. If this repo is in active development, work may be happening on an untracked branch or locally without pushes.
+**⚠️ ESCALATED — No commits in 113 days (3.7 months).** If this repo is in active development, work may be happening locally without pushes or on an untracked branch. If the project is paused, consider archiving it on GitHub to signal its status.
 
-**⚠️ Large binary files tracked without Git LFS (unchanged from prior reports):**
+**⚠️ Large binary files tracked without Git LFS (unchanged):**
 
 ```
 assets/demo.mov                                    1.5 MB
 Dockwright/Resources/Models/embedding_model.onnx  1.3 MB
 Dockwright/Resources/Models/hey_jarvis_v0.1.onnx  1.2 MB
 Dockwright/Resources/Models/melspectrogram.onnx   1.0 MB
-assets/screenshot-empty.png                         648 KB
-assets/screenshot-chat.png                          600 KB
-assets/demo.mp4                                      92 KB
+assets/screenshot-empty.png                         660 KB
+assets/screenshot-chat.png                          599 KB
+assets/demo.mp4                                      88 KB
 ```
 
-Total: ~6.4 MB of binary blobs in git history (not in LFS). Every clone fetches these in full.
+Total: ~6.4 MB of binary blobs in git history (not in LFS). Every clone fetches these in full. Migrate with `git lfs migrate import` or host externally.
 
 ---
 
 ## Action Items
 
-### Overdue (flagged 3 consecutive weeks — action needed now)
-- [ ] **agentlenz**: Remove tracked `.pyc` / `__pycache__` from git index:
+### Overdue (4 consecutive reports — action needed now)
+- [ ] **agentlenz**: Remove tracked `.pyc` / `__pycache__` from git index — one command:
   ```bash
   git rm -r --cached $(git ls-files | grep -E '\.pyc$|__pycache__')
   git commit -m "chore: remove tracked pyc files from index"
+  git push
   ```
 
 ### High priority
-- [ ] **agentlenz dashboard**: Evaluate Next.js upgrade path — 13 CVEs in current version (16.2.1); `npm audit fix --force` required (major bump)
-- [ ] **agentlenz**: Fix atexit `RuntimeError` in `EventClient.flush()` — guard `flush()` with a config-exists check rather than raising
-- [ ] **agentlenz**: Add backend lockfile (`uv.lock`) for reproducible builds — 3rd week without one
+- [ ] **agentlenz dashboard**: Run `npm audit fix --force` in `dashboard/` — Next.js CVEs outstanding for 2+ weeks
+- [ ] **agentlenz**: Add backend lockfile (`uv.lock`) — flagged 4 weeks without resolution
+- [ ] **agentlenz**: Fix teardown `RuntimeError` in `EventClient.flush()` — guard with `if not self._config: return`
+- [ ] **agentlenz**: Wire tests to CI (GitHub Actions `pytest`) so the weekly check can report pass/fail
 
 ### Short-term
-- [ ] **agentlenz**: Verify backend test suite passes — tests exist in `backend/tests/` but require PostgreSQL; add a CI job or Docker compose setup
 - [ ] **agentlenz**: Add dashboard test suite (Vitest or Playwright)
+- [ ] **dockwright**: Confirm active development status — 113 days without a commit; archive if inactive
 
 ### Long-term
-- [ ] **dockwright**: Investigate 3-month commit gap — confirm repo is still actively used
 - [ ] **dockwright**: Migrate `.onnx` models and `demo.mov` to Git LFS or external hosting
 - [ ] **dockwright**: Add Swift test target covering core logic (`CronEngine`, `LLMService`, `ToolExecutor`)
 
 ---
 
-*Report generated by automated health check · Next run: 2026-07-20*
+*Report generated by automated health check · Next run: 2026-08-03*
