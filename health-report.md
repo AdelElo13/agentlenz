@@ -1,4 +1,4 @@
-# Weekly Health Report — 2026-08-10
+# Weekly Health Report — 2026-08-17
 
 > Generated automatically. Repos analysed: `adelelo13/agentlenz`, `adelelo13/dockwright-macos-agent`.
 
@@ -8,8 +8,8 @@
 
 | Repo | Health | Key Issues |
 |------|--------|------------|
-| agentlenz | ⚠️ Warning | `.pyc` files tracked in git (**6th week unresolved**); npm CVEs outstanding; dashboard deps not installed; no backend lockfile |
-| dockwright-macos-agent | ⚠️ Warning | 0 commits in 126 days; no test suite; large binaries in git (no LFS); HEAD detached |
+| agentlenz | ⚠️ Warning | 6 stale standup branches; `.pyc` files tracked in git (**7th week unresolved**); backend has no lockfile |
+| dockwright-macos-agent | ⚠️ Warning | `fix/bug-audit-v1` unmerged (37 bug fixes waiting); no test suite; large binaries in git (no LFS) |
 
 ---
 
@@ -19,7 +19,18 @@
 
 ### 1. Stale Branches
 
-No stale merged branches. Only `main` exists locally and on origin. Clean.
+6 old standup branches are accumulating on the remote and are **not** merged into `main`:
+
+| Branch | Status |
+|--------|--------|
+| `standup-2026-05-27` | Not merged — stale |
+| `standup-2026-06-16` | Not merged — stale |
+| `standup-2026-06-17` | Not merged — stale |
+| `standup-2026-06-22` | Not merged — stale |
+| `standup-2026-06-29` | Not merged — stale |
+| `standup-2026-07-13` | Not merged — stale |
+
+**Recommendation:** Delete all 6 with `git push origin --delete standup-2026-05-27 standup-2026-06-16 standup-2026-06-17 standup-2026-06-22 standup-2026-06-29 standup-2026-07-13`.
 
 ### 2. Dependency Health
 
@@ -28,79 +39,59 @@ No stale merged branches. Only `main` exists locally and on origin. Clean.
 | Package | Constraint | Installed | Status |
 |---------|-----------|-----------|--------|
 | fastapi | `>=0.115` | 0.141.1 | ✅ Satisfied |
-| uvicorn | `>=0.32` | — | ✅ Constraint satisfied |
-| sqlalchemy | `>=2.0` | — | ⚠️ No lockfile |
-| asyncpg | `>=0.30` | — | ⚠️ No lockfile |
-| alembic | `>=1.14` | — | ⚠️ No lockfile |
+| uvicorn | `>=0.32` | 0.52.3 | ✅ Satisfied |
+| sqlalchemy | `>=2.0` | 2.0.52 | ✅ Satisfied |
 | pydantic | `>=2.0` | 2.13.4 | ✅ Satisfied |
-| psycopg2-binary | `>=2.9` | — | ⚠️ No lockfile |
-
-> **No lockfile** (`uv.lock` / `requirements.lock`) — flagged **6 consecutive weeks**. Builds are non-reproducible. Add `uv lock` or `pip-compile` to CI.
-
-**SDK (`sdk/pyproject.toml`):**
-
-| Package | Constraint | Installed | Status |
-|---------|-----------|-----------|--------|
 | httpx | `>=0.27` | 0.28.1 | ✅ Satisfied |
-| pydantic | `>=2.0` | 2.13.4 | ✅ Satisfied |
-| anthropic | `>=0.40` (optional) | — | ✅ Constraint satisfied |
-| openai | `>=1.50` (optional) | — | ✅ Constraint satisfied |
 
-No lockfile.
+> ⚠️ Backend has no lockfile (`requirements.lock` or similar). Pinning via `>=` constraints leaves builds non-reproducible.
+
+**SDK (`sdk/pyproject.toml`):** `httpx>=0.27`, `pydantic>=2.0` — both satisfied (0.28.1, 2.13.4).
 
 **Dashboard (`dashboard/package.json`):**
 
-| Package | Pinned Version | Latest | Status |
-|---------|---------------|--------|--------|
-| next | 16.2.1 | **16.3.0** | ⚠️ Minor update available; 16.2.1→16.2.12 fixes PostCSS path traversal |
-| react | 19.2.4 | 19.2.8 | Patch update available |
-| react-dom | 19.2.4 | 19.2.8 | Patch update available |
-| @tanstack/react-query | ^5.95.1 | 5.101.4 | Minor update available |
-| recharts | ^3.8.0 | 3.10.1 | Minor update available |
+| Package | Pinned Version | Notes |
+|---------|---------------|-------|
+| next | 16.2.1 | ✅ Recent |
+| react | 19.2.4 | ✅ Current |
+| @tanstack/react-query | ^5.95.1 | ✅ Current |
+| recharts | ^3.8.0 | ✅ Current |
 
-> ⚠️ **`node_modules` not installed** — all dashboard packages show as MISSING. `npm install` has not been run in `dashboard/`.
-> CVE status cannot be fully verified without installed packages. Based on pinned `next@16.2.1`, the PostCSS path traversal and related high-severity CVEs from prior reports remain unpatched.
-> Run `npm install && npm audit fix` in `dashboard/` to install and remediate.
+No `npm audit` run (no Node environment). Manual check recommended for CVEs.
 
 ### 3. Code Quality
 
 ```
-TODO / FIXME / HACK count: 0  (across .py, .ts, .js files)
+TODO/FIXME/HACK comments: 0  ✅
 ```
 
-Zero markers across all source files. Clean for six consecutive weeks.
+Zero code smell markers across all `.py`, `.ts`, `.js` files.
 
 ### 4. Test Status
 
-| Suite | Result | Details |
-|-------|--------|---------|
-| `sdk` (pytest) | ✅ **25 passed, 1 skipped** | 7 test files |
-| `backend` (pytest) | ✅ **17 passed** | 6 test files |
-| `dashboard` | ⚠️ No test suite | — |
+| Suite | Result |
+|-------|--------|
+| `sdk/tests/` (25 tests) | ✅ 25 passed, 1 skipped |
+| `backend/tests/` (17 tests) | ✅ 17 passed |
 
-> **Note:** SDK teardown emits a `RuntimeError: Call agentlenz.init() before using AgentLenz` in an atexit handler — benign and tests pass cleanly, but worth fixing. Guard `EventClient.flush()` with an early return if `_config` is not set.
+**Minor issue:** SDK emits a noisy `RuntimeError` at process exit when tests run without calling `agentlenz.init()`. Not a test failure, but it pollutes CI output.
+
+```
+RuntimeError: Call agentlenz.init() before using AgentLenz
+```
+
+Fix: guard the `flush()` atexit callback with a try/except or check initialisation state before flushing.
 
 ### 5. Git Hygiene
 
 | Check | Status |
 |-------|--------|
-| Uncommitted changes | ✅ Clean |
+| Uncommitted changes | ✅ None |
 | Stashes | ✅ None |
-| HEAD state | ✅ On `main` |
-| Commits this week | 5 (standup: 2026-08-04 through 2026-08-10) |
-| Last commit | `b6e5aca` "standup: 2026-08-10" |
+| `.pyc` files tracked in git | ⚠️ Still present (7th week) |
+| Large files (>1MB) | ✅ None |
 
-> ⚠️ **ESCALATED — `.pyc` / `__pycache__` files tracked in git (6th consecutive weekly report).**
->
-> Compiled Python files remain in the git index, causing unnecessary churn and inflating clone size. One command to fix:
->
-> ```bash
-> cd agentlenz
-> git rm -r --cached $(git ls-files | grep -E '\.pyc$|__pycache__')
-> printf "__pycache__/\n*.pyc\n" >> .gitignore
-> git commit -m "chore: remove tracked pyc files and add gitignore entries"
-> git push
-> ```
+The `.pyc` files (`sdk/tests/__pycache__/*.pyc`, `backend/alembic/versions/__pycache__/*.pyc`) remain tracked in git. A `**/__pycache__` entry in `.gitignore` plus `git rm -r --cached **/__pycache__` will resolve this permanently.
 
 ---
 
@@ -108,99 +99,71 @@ Zero markers across all source files. Clean for six consecutive weeks.
 
 **Overall: ⚠️ Warning**
 
-### 1. Stale Branches
+### 1. Stale / Unmerged Branches
 
-No stale merged branches. `main` is the only branch. Clean.
+| Branch | Commits Ahead of `main` | Status |
+|--------|------------------------|--------|
+| `fix/bug-audit-v1` | 1 | **Unmerged — needs review** |
 
-> ⚠️ HEAD is in a **detached state** (`HEAD detached at refs/heads/main`). This is unusual — any new commits made in this state would not update the branch ref. Resolve with `git checkout main`.
+The unmerged commit is:
+```
+f38d3c0  fix: resolve 37 audited bugs + 2 hardening items across Dockwright
+```
+
+This is a significant body of work (37 bugs + 2 hardening items). It has been sitting unmerged. **Recommend reviewing and merging `fix/bug-audit-v1` → `main` promptly.**
 
 ### 2. Dependency Health
 
-Pure Apple-framework Swift project. No SPM packages or third-party dependencies declared. **N/A.**
-
-Model files present in `Dockwright/Resources/Models/`:
-- `melspectrogram.onnx`
-- `embedding_model.onnx`
-- `hey_jarvis_v0.1.onnx`
-
-These are binary blobs tracked directly in git without LFS (see Git Hygiene).
+No SPM packages — the project uses Apple frameworks only (Speech, AVFoundation, Vision, etc.). No external dependency file to audit. ✅
 
 ### 3. Code Quality
 
 ```
-TODO / FIXME / HACK count: 0  (across 104 .swift files)
+TODO/FIXME/HACK comments: 0  ✅
 ```
 
-Zero markers. Clean for all weekly reports to date.
+Zero code smell markers across all `.swift` files.
 
 ### 4. Test Status
 
-⚠️ **No test suite.** No Swift test target found. A 104-file macOS agent (LLMService, CronEngine, ToolExecutor, VoiceService, ScreenCaptureService, BrowserTabWatcher, etc.) has zero automated test coverage — unchanged from all prior reports.
+| Suite | Result |
+|-------|--------|
+| XCTest / Unit tests | ⚠️ No test suite found |
 
-Minimum recommended targets: `CronEngine` (cron expression parsing), `LLMService` (SSE streaming/parsing), `ToolExecutor` (argument dispatch + security blocking).
+The project has no automated tests. This is a recurring concern, especially with 37 bugs recently resolved. Even minimal integration tests for core flows (LLM service, tool registry, cron engine) would catch regressions.
 
 ### 5. Git Hygiene
 
 | Check | Status |
 |-------|--------|
-| Uncommitted changes | ✅ Clean |
+| Uncommitted changes | ✅ None |
 | Stashes | ✅ None |
-| HEAD state | ⚠️ **Detached at refs/heads/main** |
-| Commits this week | 0 |
-| Last commit | `d6d3f3f` "chore: update UIAutomationTool" — **126 days ago** (~2026-04-06) |
+| Large binary files (no LFS) | ⚠️ See below |
+| HEAD state | ⚠️ Detached (container artefact, not critical) |
 
-> ⚠️ **ESCALATED — No commits in 126 days (4.1 months).** If development is happening locally, push the branch. If the project is paused, consider archiving on GitHub to signal its status.
+Large files tracked directly in git (no Git LFS):
 
-**⚠️ Large binary files tracked without Git LFS (unchanged):**
+| File | Size |
+|------|------|
+| `assets/demo.mov` | 1.5 MB |
+| `Dockwright/Resources/Models/embedding_model.onnx` | 1.3 MB |
+| `Dockwright/Resources/Models/hey_jarvis_v0.1.onnx` | 1.3 MB |
+| `Dockwright/Resources/Models/melspectrogram.onnx` | 1.1 MB |
+| `assets/screenshot-empty.png` | 676 KB |
+| `assets/screenshot-chat.png` | 614 KB |
 
-```
-assets/demo.mov                                    1.5 MB
-Dockwright/Resources/Models/embedding_model.onnx  1.3 MB
-Dockwright/Resources/Models/hey_jarvis_v0.1.onnx  1.2 MB
-Dockwright/Resources/Models/melspectrogram.onnx   1.0 MB
-assets/screenshot-empty.png                         660 KB
-assets/screenshot-chat.png                          599 KB
-assets/demo.mp4                                      88 KB
-```
-
-Total: ~6.4 MB of binary blobs in git history. Every clone fetches the full history. Migrate with `git lfs migrate import` or host externally (e.g. GitHub Releases).
+**Total large binary payload:** ~5.8 MB. Consider Git LFS for ONNX models and video assets to keep clone size manageable.
 
 ---
 
 ## Action Items
 
-### Overdue (6 consecutive reports — action needed now)
-- [ ] **agentlenz**: Remove tracked `.pyc` / `__pycache__` from git index and add `.gitignore` entries (command above in Git Hygiene section)
-
-### High priority
-- [ ] **agentlenz dashboard**: `cd dashboard && npm install && npm audit fix` — installs packages and remediates high-severity CVEs in `next@16.2.1`
-- [ ] **agentlenz**: Add backend lockfile (`uv.lock`) — flagged 6 weeks without resolution
-- [ ] **agentlenz**: Fix teardown `RuntimeError` in `EventClient.flush()` — guard with `if not self._initialized: return`
-- [ ] **dockwright**: Fix detached HEAD: `git checkout main`
-- [ ] **dockwright**: Confirm active development status — 126 days without a push; archive if inactive
-
-### Short-term
-- [ ] **agentlenz**: Wire SDK and backend tests to CI (GitHub Actions) so the weekly check confirms pass/fail automatically
-- [ ] **agentlenz**: Add dashboard test suite (Vitest or Playwright)
-- [ ] **agentlenz**: Upgrade `next` to 16.3.0 in `dashboard/package.json`
-
-### Long-term
-- [ ] **dockwright**: Migrate `.onnx` models and `demo.mov` to Git LFS or external hosting
-- [ ] **dockwright**: Add Swift test target covering core logic (`CronEngine`, `LLMService`, `ToolExecutor`)
-
----
-
-## Week-over-Week Deltas
-
-| Area | Last Week | This Week | Change |
-|------|-----------|-----------|--------|
-| agentlenz: test status | ✅ SDK 25/25, Backend 17/17 | ✅ SDK 25/25, Backend 17/17 | No change (stable) |
-| agentlenz: pyc files | ⚠️ 50 files (5 weeks) | ⚠️ 50 files (6 weeks) | No change |
-| agentlenz: dashboard CVEs | ⚠️ 7 CVEs (6 high) | ⚠️ Unverified (deps not installed) | No change |
-| agentlenz: commit activity | 5 commits | 5 commits | No change (active) |
-| dockwright: days inactive | 119 days | 126 days | +7 days |
-| dockwright: HEAD state | ⚠️ Detached | ⚠️ Detached | No change |
-
----
-
-*Report generated by automated health check · Next run: 2026-08-17*
+| Priority | Repo | Action |
+|----------|------|--------|
+| 🔴 High | dockwright-macos-agent | Review and merge `fix/bug-audit-v1` — 37 bug fixes unreviewed |
+| 🟡 Medium | agentlenz | Delete 6 stale standup branches on origin |
+| 🟡 Medium | agentlenz | Add `**/__pycache__` to `.gitignore` and remove tracked `.pyc` files (7th week) |
+| 🟡 Medium | agentlenz | Add a backend lockfile (`pip-compile` or `uv lock`) for reproducible builds |
+| 🟢 Low | agentlenz | Fix SDK `flush()` atexit RuntimeError (add init-guard before flushing) |
+| 🟢 Low | dockwright-macos-agent | Add basic XCTest suite for LLM service and tool registry |
+| 🟢 Low | dockwright-macos-agent | Migrate ONNX models and demo video to Git LFS |
