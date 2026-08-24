@@ -1,86 +1,56 @@
-# Weekly Health Report — 2026-08-17
+# Weekly Health Report — 2026-08-24
 
-> Generated automatically. Repos analysed: `adelelo13/agentlenz`, `adelelo13/dockwright-macos-agent`.
-
----
-
-## Summary
-
-| Repo | Health | Key Issues |
-|------|--------|------------|
-| agentlenz | ⚠️ Warning | 6 stale standup branches; `.pyc` files tracked in git (**7th week unresolved**); backend has no lockfile |
-| dockwright-macos-agent | ⚠️ Warning | `fix/bug-audit-v1` unmerged (37 bug fixes waiting); no test suite; large binaries in git (no LFS) |
+Generated automatically. Two repositories checked: `agentlenz` and `dockwright-macos-agent`.
 
 ---
 
-## `adelelo13/agentlenz`
+## agentlenz
 
-**Overall: ⚠️ Warning**
+**Health: ⚠️ Warning**
 
 ### 1. Stale Branches
 
-6 old standup branches are accumulating on the remote and are **not** merged into `main`:
+7 remote standup branches exist that were never merged to `main` or cleaned up:
 
-| Branch | Status |
-|--------|--------|
-| `standup-2026-05-27` | Not merged — stale |
-| `standup-2026-06-16` | Not merged — stale |
-| `standup-2026-06-17` | Not merged — stale |
-| `standup-2026-06-22` | Not merged — stale |
-| `standup-2026-06-29` | Not merged — stale |
-| `standup-2026-07-13` | Not merged — stale |
+| Branch | Commits ahead of main |
+|--------|----------------------|
+| `origin/standup-2026-05-27` | **53** — diverged long ago; contains standups + health reports from May–present |
+| `origin/standup-2026-08-24` | 1 |
+| `origin/standup-2026-07-13` | 1 |
+| `origin/standup-2026-06-29` | 1 |
+| `origin/standup-2026-06-22` | 3 |
+| `origin/standup-2026-06-17` | 1 |
+| `origin/standup-2026-06-16` | 1 |
 
-**Recommendation:** Delete all 6 with `git push origin --delete standup-2026-05-27 standup-2026-06-16 standup-2026-06-17 standup-2026-06-22 standup-2026-06-29 standup-2026-07-13`.
+**Action needed:** `standup-2026-05-27` is 53 commits ahead of `main` — all standup and health-report commits appear to be going onto this branch rather than `main`. This is likely the wrong base branch and explains why the remote diverged. The other standup branches (1–3 commits ahead) are normal one-off branch artifacts. Consider deleting them all after confirming nothing is lost.
+
+Note: HEAD is detached from `refs/heads/main` in the local clone, which may affect push targets.
 
 ### 2. Dependency Health
 
-**Backend (`backend/pyproject.toml`):**
+**Backend (`pyproject.toml`)** — Python deps use `>=` minimum versions (flexible pinning):
+- `fastapi>=0.115`, `uvicorn>=0.32`, `sqlalchemy>=2.0`, `pydantic>=2.0` — all reasonable minimums, no known critical CVEs in these ranges.
+- System Python packages show outdated versions (e.g. `cryptography 41.0.7` vs latest `50.0.0`, `pip 24.0` vs `26.2.1`) but these are OS-level packages, not project deps.
 
-| Package | Constraint | Installed | Status |
-|---------|-----------|-----------|--------|
-| fastapi | `>=0.115` | 0.141.1 | ✅ Satisfied |
-| uvicorn | `>=0.32` | 0.52.3 | ✅ Satisfied |
-| sqlalchemy | `>=2.0` | 2.0.52 | ✅ Satisfied |
-| pydantic | `>=2.0` | 2.13.4 | ✅ Satisfied |
-| httpx | `>=0.27` | 0.28.1 | ✅ Satisfied |
-
-> ⚠️ Backend has no lockfile (`requirements.lock` or similar). Pinning via `>=` constraints leaves builds non-reproducible.
-
-**SDK (`sdk/pyproject.toml`):** `httpx>=0.27`, `pydantic>=2.0` — both satisfied (0.28.1, 2.13.4).
-
-**Dashboard (`dashboard/package.json`):**
-
-| Package | Pinned Version | Notes |
-|---------|---------------|-------|
-| next | 16.2.1 | ✅ Recent |
-| react | 19.2.4 | ✅ Current |
-| @tanstack/react-query | ^5.95.1 | ✅ Current |
-| recharts | ^3.8.0 | ✅ Current |
-
-No `npm audit` run (no Node environment). Manual check recommended for CVEs.
+**Dashboard (`package.json`)** — Next.js 16.2.1, React 19.2.4. Current versions as of report date.
 
 ### 3. Code Quality
 
-```
-TODO/FIXME/HACK comments: 0  ✅
-```
+| File type | TODO/FIXME/HACK count |
+|-----------|----------------------|
+| Python (backend) | 0 |
+| TypeScript/JS (dashboard) | 0 |
+| **Total** | **0** |
 
-Zero code smell markers across all `.py`, `.ts`, `.js` files.
+Clean codebase — no outstanding code debt markers.
 
 ### 4. Test Status
 
-| Suite | Result |
-|-------|--------|
-| `sdk/tests/` (25 tests) | ✅ 25 passed, 1 skipped |
-| `backend/tests/` (17 tests) | ✅ 17 passed |
+**Backend tests:** ✅ **17 passed, 0 failed** (0.35s)
 
-**Minor issue:** SDK emits a noisy `RuntimeError` at process exit when tests run without calling `agentlenz.init()`. Not a test failure, but it pollutes CI output.
+Test files: `test_budgets.py`, `test_costs.py`, `test_ingest.py`, `test_pricing.py`, `test_recommender.py`, `test_waste_detector.py`
 
-```
-RuntimeError: Call agentlenz.init() before using AgentLenz
-```
-
-Fix: guard the `flush()` atexit callback with a try/except or check initialisation state before flushing.
+**Dashboard tests:** No test suite configured (`npm test` not set up).
 
 ### 5. Git Hygiene
 
@@ -88,49 +58,40 @@ Fix: guard the `flush()` atexit callback with a try/except or check initialisati
 |-------|--------|
 | Uncommitted changes | ✅ None |
 | Stashes | ✅ None |
-| `.pyc` files tracked in git | ⚠️ Still present (7th week) |
 | Large files (>1MB) | ✅ None |
-
-The `.pyc` files (`sdk/tests/__pycache__/*.pyc`, `backend/alembic/versions/__pycache__/*.pyc`) remain tracked in git. A `**/__pycache__` entry in `.gitignore` plus `git rm -r --cached **/__pycache__` will resolve this permanently.
+| HEAD state | ⚠️ Detached from `refs/heads/main` |
 
 ---
 
-## `adelelo13/dockwright-macos-agent`
+## dockwright-macos-agent
 
-**Overall: ⚠️ Warning**
+**Health: ⚠️ Warning**
 
-### 1. Stale / Unmerged Branches
+### 1. Stale Branches
 
-| Branch | Commits Ahead of `main` | Status |
-|--------|------------------------|--------|
-| `fix/bug-audit-v1` | 1 | **Unmerged — needs review** |
+| Branch | Commits ahead of main | Note |
+|--------|----------------------|------|
+| `origin/fix/bug-audit-v1` | 1 | Contains `fix: resolve 37 audited bugs + 2 hardening items` — **unmerged PR work** |
 
-The unmerged commit is:
-```
-f38d3c0  fix: resolve 37 audited bugs + 2 hardening items across Dockwright
-```
-
-This is a significant body of work (37 bugs + 2 hardening items). It has been sitting unmerged. **Recommend reviewing and merging `fix/bug-audit-v1` → `main` promptly.**
+**Action needed:** `fix/bug-audit-v1` has an unmerged commit with a significant bug-fix payload (37 audited bugs). Either open a PR to merge it or confirm it was intentionally abandoned.
 
 ### 2. Dependency Health
 
-No SPM packages — the project uses Apple frameworks only (Speech, AVFoundation, Vision, etc.). No external dependency file to audit. ✅
+No external package manager dependencies — macOS app built with Xcode using only Apple frameworks (Swift, Speech, AVFoundation, Vision). No SPM packages declared. No outdated deps to report.
+
+Deployment target: `MACOSX_DEPLOYMENT_TARGET = 14.0` ✅ (correct per project spec)
 
 ### 3. Code Quality
 
-```
-TODO/FIXME/HACK comments: 0  ✅
-```
+| File type | TODO/FIXME/HACK count |
+|-----------|----------------------|
+| Swift (104 files) | 0 |
 
-Zero code smell markers across all `.swift` files.
+No technical debt markers in any Swift source file.
 
 ### 4. Test Status
 
-| Suite | Result |
-|-------|--------|
-| XCTest / Unit tests | ⚠️ No test suite found |
-
-The project has no automated tests. This is a recurring concern, especially with 37 bugs recently resolved. Even minimal integration tests for core flows (LLM service, tool registry, cron engine) would catch regressions.
+No test suite present. Xcode unit tests would require a macOS build environment — not available in this CI context. Build validation not run (no Xcode available).
 
 ### 5. Git Hygiene
 
@@ -138,10 +99,10 @@ The project has no automated tests. This is a recurring concern, especially with
 |-------|--------|
 | Uncommitted changes | ✅ None |
 | Stashes | ✅ None |
-| Large binary files (no LFS) | ⚠️ See below |
-| HEAD state | ⚠️ Detached (container artefact, not critical) |
+| Large files (>1MB) | ⚠️ 4 files tracked in git |
+| HEAD state | ⚠️ Detached from `refs/heads/main` |
 
-Large files tracked directly in git (no Git LFS):
+**Large files in git:**
 
 | File | Size |
 |------|------|
@@ -149,21 +110,21 @@ Large files tracked directly in git (no Git LFS):
 | `Dockwright/Resources/Models/embedding_model.onnx` | 1.3 MB |
 | `Dockwright/Resources/Models/hey_jarvis_v0.1.onnx` | 1.3 MB |
 | `Dockwright/Resources/Models/melspectrogram.onnx` | 1.1 MB |
-| `assets/screenshot-empty.png` | 676 KB |
-| `assets/screenshot-chat.png` | 614 KB |
 
-**Total large binary payload:** ~5.8 MB. Consider Git LFS for ONNX models and video assets to keep clone size manageable.
+Model files are expected (wake word detection). `assets/demo.mov` is a demo video tracked directly in git — consider moving to Git LFS if the repo grows.
 
 ---
 
-## Action Items
+## Summary
 
-| Priority | Repo | Action |
-|----------|------|--------|
-| 🔴 High | dockwright-macos-agent | Review and merge `fix/bug-audit-v1` — 37 bug fixes unreviewed |
-| 🟡 Medium | agentlenz | Delete 6 stale standup branches on origin |
-| 🟡 Medium | agentlenz | Add `**/__pycache__` to `.gitignore` and remove tracked `.pyc` files (7th week) |
-| 🟡 Medium | agentlenz | Add a backend lockfile (`pip-compile` or `uv lock`) for reproducible builds |
-| 🟢 Low | agentlenz | Fix SDK `flush()` atexit RuntimeError (add init-guard before flushing) |
-| 🟢 Low | dockwright-macos-agent | Add basic XCTest suite for LLM service and tool registry |
-| 🟢 Low | dockwright-macos-agent | Migrate ONNX models and demo video to Git LFS |
+| Repo | Health | Top Issue |
+|------|--------|-----------|
+| `agentlenz` | ⚠️ Warning | `standup-2026-05-27` branch is 53 commits ahead of main; 6 other stale branches to clean up |
+| `dockwright-macos-agent` | ⚠️ Warning | `fix/bug-audit-v1` has 1 unmerged commit (37 bug fixes) — needs PR or explicit discard |
+
+### Recommended Actions
+
+1. **agentlenz:** Investigate `standup-2026-05-27` — if all standup commits are here and not on `main`, push them. Then delete all stale standup branches.
+2. **agentlenz:** Set up `npm test` in the dashboard package.
+3. **dockwright-macos-agent:** Open or close a PR for `fix/bug-audit-v1`.
+4. **dockwright-macos-agent:** Consider Git LFS for `assets/demo.mov`.
