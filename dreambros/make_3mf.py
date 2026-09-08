@@ -25,5 +25,5 @@ def plate(jobname, items, gap=8):
 
 print("3MF-jobs:")
 plate("01_pasprints_PLA", [("test_tray_fit", load("test_tray_fit"), 1), ("test_meter_fit", load("test_meter_fit"), 1)])
-plate("02_box_PLA",       [("box", load("box"), 1), ("lid", load("lid"), 1), ("handle", load("handle"), 1)])
+plate("02_box_PLA",       [("box", load("box"), 1), ("lid", load("lid"), 1), ("handle", load("handle"), 1), ("lid_logo_inlay", load("lid_logo_inlay"), 1)])
 plate("03_gasket_voetjes_TPU", [("gasket", load("gasket"), 1), ("foot", load("foot"), 4)])

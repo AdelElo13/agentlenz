@@ -31,26 +31,24 @@ def fig3(items, title, fname, elev=28, azim=-55):
     print("  ", fname)
 
 box, lid, gasket, foot, tray = H.box_part(), H.lid_part(), H.gasket_part(), H.foot_part(), H.load_tray_in_box()
-meter = H.meter_dummy()
+meter = H.meter_dummy_box()
+inlay = H.logo_inlay_part().translate([0, H.LOGO_Y, H.BOX_H + H.LID_TOP - H.LOGO_DEPTH])
 lid_on = lid.translate([0, 0, H.BOX_H]); h_up = H.handle_part(0).translate([0, 0, H.BOX_H]); h_flat = H.handle_part(90).translate([0, 0, H.BOX_H])
-jars = None
-for (x, y) in [(sx * 23.5, sy * 21) for sx in (-1, 1) for sy in (-1, 1)]:
-    j = H.cyl(H.JAR_D, H.JAR_H, x, y, H.LEDGE_Z + H.T_FLANGE_H - H.POCKET_DEPTH)
-    jars = j if jars is None else jars + j
+jars = H.jars_in_box()
 feet = None
 for (x, y) in H.FOOT_POS:
     f = foot.translate([x, y, -(H.FOOT_H - H.FOOT_RECESS_H)]); feet = f if feet is None else feet + f
 
 print("Previews:")
 fig3([(tm(box), "#2e8b3d", 1), (tm(tray), "#d9d9d9", 1), (tm(jars), "#b8d8f0", 0.9), (tm(meter), "#222222", 1), (tm(feet), "#e03030", 1)],
-     "Box open: tray met 4 potjes, meter in de bezel", "preview_open.png", elev=45, azim=-50)
-fig3([(tm(box), "#2e8b3d", 1), (tm(lid_on), "#e0b020", 1), (tm(h_up), "#e03030", 1), (tm(meter), "#222222", 1), (tm(feet), "#e03030", 1)],
-     "Dicht, handvat omhoog", "preview_closed_handle_up.png")
-fig3([(tm(box), "#2e8b3d", 1), (tm(lid_on), "#e0b020", 1), (tm(h_flat), "#e03030", 1), (tm(meter), "#222222", 1), (tm(feet), "#e03030", 1)],
-     "Dicht, handvat plat", "preview_closed_handle_flat.png", elev=35, azim=-125)
+     "Box open: tray met 4 potjes, ronde meter in de boss op de voorkant", "preview_open.png", elev=35, azim=-40)
+fig3([(tm(box), "#2e8b3d", 1), (tm(lid_on), "#e0b020", 1), (tm(h_up), "#e03030", 1), (tm(meter), "#222222", 1), (tm(inlay), "#ffffff", 1), (tm(feet), "#e03030", 1)],
+     "Dicht, handvat omhoog: ronde meter voor, logo in het deksel", "preview_closed_handle_up.png", elev=30, azim=-35)
+fig3([(tm(box), "#2e8b3d", 1), (tm(lid_on), "#e0b020", 1), (tm(h_flat), "#e03030", 1), (tm(meter), "#222222", 1), (tm(inlay), "#ffffff", 1), (tm(feet), "#e03030", 1)],
+     "Dicht, handvat plat", "preview_closed_handle_flat.png", elev=50, azim=-60)
 half = H.Manifold.cube([200, 200, 200], True).translate([100, 0, 50])
 cut = lambda m: tm(m - half)
 fig3([(cut(box), "#2e8b3d", 1), (cut(tray), "#d9d9d9", 1), (cut(jars), "#b8d8f0", 1), (cut(lid_on), "#e0b020", 1), (cut(meter), "#222222", 1),
       (cut(gasket.translate([0, 0, H.BOX_H - (H.GASKET_H - H.GROOVE_DEPTH)])), "#111111", 1)],
-     "Doorsnede: richel, potjes, gasket, meterbezel", "preview_section.png", elev=18, azim=-35)
+     "Doorsnede: richel, potjes, gasket, meter in de boss", "preview_section.png", elev=18, azim=-35)
 fig3([(tm(lid.rotate([180, 0, 0])), "#e0b020", 1)], "Deksel in printstand (bovenkant op het bed)", "preview_lid_print.png", elev=30, azim=-50)
