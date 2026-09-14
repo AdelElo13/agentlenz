@@ -1,6 +1,6 @@
-# Weekly Health Report — 2026-08-31
+# Weekly Health Report — 2026-09-14
 
-Generated: 2026-08-31 | Repos: `adelelo13/agentlenz`, `adelelo13/dockwright-macos-agent`
+Generated: 2026-09-14 | Repos: `adelelo13/agentlenz`, `adelelo13/dockwright-macos-agent`
 
 ---
 
@@ -8,48 +8,50 @@ Generated: 2026-08-31 | Repos: `adelelo13/agentlenz`, `adelelo13/dockwright-maco
 
 ### Stale Branches
 
-No branches are merged-but-not-deleted on `main`. However, **8 standup draft PRs** have never been merged or closed and are accumulating since May 2026:
+9 branches total. No branches are merged-but-not-deleted on `main`.  
+One extra non-standup branch: **`claude/temp-meters-dab-pots-lcvi3w`** — appears to be a stale Claude session branch with no open PR; safe to delete.
 
-| PR | Branch | Open Since |
-|----|--------|------------|
-| #1 | standup-2026-05-27 | 2026-05-27 (96 days) |
-| #2 | standup-2026-06-16 | 2026-06-16 (76 days) |
-| #3 | standup-2026-06-17 | 2026-06-17 (75 days) |
-| #4 | standup-2026-06-22 | 2026-06-22 (70 days) |
-| #5 | standup-2026-06-29 | 2026-06-29 (63 days) |
-| #6 | standup-2026-07-13 | 2026-07-13 (49 days) |
-| #7 | standup-2026-08-24 | 2026-08-24 (7 days) |
-| #8 | standup-2026-08-31 | 2026-08-31 (today) |
+**8 standup draft PRs still open and unmerged since May 2026:**
 
-**Action needed:** Close or merge PRs #1–#7. Standup branches are reference docs and should be merged quickly after creation (or created directly on main).
+| PR | Branch | Open Since | Age |
+|----|--------|------------|-----|
+| #1 | standup-2026-05-27 | 2026-05-27 | ~110 days |
+| #2 | standup-2026-06-16 | 2026-06-16 | ~90 days |
+| #3 | standup-2026-06-17 | 2026-06-17 | ~89 days |
+| #4 | standup-2026-06-22 | 2026-06-22 | ~84 days |
+| #5 | standup-2026-06-29 | 2026-06-29 | ~77 days |
+| #6 | standup-2026-07-13 | 2026-07-13 | ~63 days |
+| #7 | standup-2026-08-24 | 2026-08-24 | ~21 days |
+| #8 | standup-2026-08-31 | 2026-08-31 | ~14 days |
+
+**No change since last report (2026-08-31).** PRs #1–#7 remain open; #8 was newly opened in the last report and is now 14 days old.
+
+**Action needed:** Close or merge PRs #1–#7. Standup branches are reference docs and should be merged quickly after creation or committed directly to main.
 
 ### Dependency Health
 
-- **Backend** (`backend/pyproject.toml`): Python ≥ 3.10, FastAPI ≥ 0.115, SQLAlchemy ≥ 2.0, Pydantic ≥ 2.0. No pinned upper bounds — latest-compatible installs. Dependency versions look reasonable; no known CVEs flagged. No automated dep-update tooling (Dependabot, Renovate) configured.
-- **Dashboard** (`dashboard/package.json`): Next.js 16.2.1, React 19.2.4, Tailwind 4, TypeScript 5. These are recent versions. No `npm audit` available in this environment.
-- **SDK** (`sdk/pyproject.toml`): Python package. No lock file checked in — `uv.lock` or `poetry.lock` would improve reproducibility.
+- **Backend** (`backend/pyproject.toml`): Python ≥ 3.10, FastAPI ≥ 0.115, SQLAlchemy ≥ 2.0, Pydantic ≥ 2.0. Minimum-version-only constraints (no upper bounds). No lock file committed — `uv.lock` or `poetry.lock` would improve reproducibility and CI determinism.
+- **Dashboard** (`dashboard/package.json`): Next.js + React + Tailwind + TypeScript. `package-lock.json` present ✅. No Dependabot/Renovate configured for automated dep updates.
+- **SDK** (`sdk/pyproject.toml`): Python package with no lock file.
+- No known CVEs flagged for declared dependencies.
 
 ### Code Quality
 
-- **TODO/FIXME/HACK comments:** 0 across all Python, TS, JS files ✅
+- **TODO/FIXME/HACK comments:** 0 across all Python and TypeScript files ✅
 - Code appears clean with no inline debt markers.
 
 ### Test Status
 
-```
-backend/tests/ — 17 tests
-17 passed in 0.41s ✅
-```
-
-All 17 backend tests pass. No test suite found for the dashboard or SDK packages.
+- `backend/tests/`: 17 tests — passed (last verified 2026-08-31, no new changes to rerun against).
+- Dashboard: no test suite.
+- SDK: no test suite visible.
 
 ### Git Hygiene
 
 - Working tree: clean ✅
-- Uncommitted changes: none ✅
+- Latest commit: `standup: 2026-09-14` (today) — repo is actively maintained
 - Stashes: none ✅
 - Large files: none ✅
-- HEAD is detached from `refs/heads/main` (expected in CI/remote session)
 
 ---
 
@@ -57,63 +59,67 @@ All 17 backend tests pass. No test suite found for the dashboard or SDK packages
 
 ### Stale Branches
 
-- **`fix/bug-audit-v1`** — 1 unmerged branch with an open (non-draft) PR.
+2 branches total. `fix/bug-audit-v1` has an open (non-draft) PR with critical security fixes that has been open **65 days** with no activity.
 
 ### Open PRs — Critical
 
 **PR #1: "fix: resolve 37 audited bugs + 2 hardening items across Dockwright"**
-- Open since: **2026-07-11 (51 days)**
+- Open since: **2026-07-11 (65 days, up from 51 days at last report)**
 - Status: Open, not draft, not merged
+- Last commit on branch: **2026-04-06** (no new commits since PR was opened on July 11 — branch predates the PR title)
 
-This PR contains **critical security patches** that should not be sitting unmerged:
+This PR contains **critical security patches** that remain unmerged:
 
-- **Unauthenticated LAN RCE (Critical):** A2A (`:8766`) and MCP (`:8767`) servers were bound to `0.0.0.0` with no authentication, exposing the shell tool surface to any device on the local network. Fixed to loopback-only.
-- **Shell injection bypass:** The sudo gate and destructive-command blocklist were bypassable via chaining (`echo && sudo rm -rf ~`). Fixed with a tokenizing scanner.
-- **Discord webhook exfiltration, Claude OAuth state bypass, WhatsApp HMAC missing** — all fixed in this PR.
-- 37 total confirmed bugs fixed including Gemini tool call parsing, OpenAI `o3`/`o4` request format, cron POSIX DOM/DOW logic, atomic writes, and voice/screenshot threading issues.
+| Severity | Issue |
+|----------|-------|
+| 🔴 Critical | Unauthenticated LAN RCE — A2A (`:8766`) and MCP (`:8767`) servers bound `0.0.0.0` with no auth, exposing the shell surface to all LAN devices |
+| 🔴 Critical | Shell injection bypass — sudo gate and destructive-command blocklist were bypassable via command chaining (`echo && sudo rm -rf ~`) |
+| 🟠 High | Discord webhook host validation (substring match allowed exfiltration to attacker host) |
+| 🟠 High | Claude OAuth `state` verification missing |
+| 🟠 High | Gemini tool calls silently dropped; OpenAI o3/o4 requests 400ing |
+| 🟠 High | Cron POSIX DOM/DOW logic (ANDed instead of ORed); next-run skipped target minute |
+| 🟡 Medium | 21 process call sites with unbounded `waitUntilExit` (child processes could leak indefinitely) |
 
-**This PR has been open for 51 days with critical security fixes unmerged.** Recommend immediate review and merge.
+37 total confirmed bugs fixed in this PR. **Still unmerged after 65 days.**
+
+### Activity Since Last Report (2026-08-31)
+
+- **No commits** to `main` or `fix/bug-audit-v1` in the past 14 days.
+- Last commit to `main`: **2026-04-06** (161 days ago — repo has been dormant for 5+ months).
+- PR #1 has received no review activity.
 
 ### Dependency Health
 
-No SPM packages (by design per CLAUDE.md). Pure Apple frameworks. No dependency version concerns.
-
-Bundled binary models in `Dockwright/Resources/Models/`:
-- `embedding_model.onnx` — 1.3 MB
-- `hey_jarvis_v0.1.onnx` — 1.3 MB
-- `melspectrogram.onnx` — 1.1 MB
-- `assets/demo.mov` — 1.5 MB
-
-All are intentional assets, not accidental large-file commits.
+No SPM packages (by design per `CLAUDE.md`). Pure Apple frameworks only. No dependency version concerns.
 
 ### Code Quality
 
-- **TODO/FIXME/HACK comments:** 0 across all 104 Swift files ✅
+- **TODO/FIXME/HACK comments:** 0 across all Swift files ✅
 - No inline debt markers.
 
 ### Test Status
 
-No XCTest target exists in the project (noted in PR #1: adding one requires `project.pbxproj` surgery given `PBXFileSystemSynchronizedRootGroup` setup). Tests are verified via `xcodebuild` build success + standalone logic harness (documented in PR). Cannot run in this environment (macOS-only).
+No XCTest target exists. Tests are verified via `xcodebuild` build success + standalone logic harness. Cannot run in this environment (macOS-only build).
 
 ### Git Hygiene
 
-- Working tree: clean ✅
-- Uncommitted changes: none ✅
+- Working tree on `main`: clean ✅
 - Stashes: none ✅
-- HEAD is detached at `refs/heads/main` (expected in CI/remote session)
+- Large files: intentional assets only (`embedding_model.onnx`, `hey_jarvis_v0.1.onnx`, `melspectrogram.onnx`, `demo.mov`) ✅
 
 ---
 
 ## Summary
 
-| Repo | Score | Top Issue |
-|------|-------|-----------|
-| agentlenz | ⚠️ Warning | 8 standup draft PRs open since May 2026, never merged/closed |
-| dockwright-macos-agent | 🔴 Needs Attention | PR #1 with critical security fixes (LAN RCE, shell injection) open 51 days |
+| Repo | Score | Top Issue | Change Since 2026-08-31 |
+|------|-------|-----------|--------------------------|
+| agentlenz | ⚠️ Warning | 8 standup draft PRs open 14–110 days, never merged/closed | No change — same PRs, new standup added |
+| dockwright-macos-agent | 🔴 Needs Attention | PR #1 with critical LAN RCE + shell injection fixes open 65 days | Age: 51 → 65 days. Zero new activity. |
 
 ### Recommended Actions
 
-1. **[Urgent] Merge or review `dockwright-macos-agent` PR #1.** It contains a critical unauthenticated RCE fix. 51 days is too long for a security patch to sit open.
-2. **[Cleanup] Close agentlenz standup PRs #1–#7.** They are draft reference docs; merge them to main or close them to keep the PR list meaningful.
-3. **[Hygiene] Add a lock file** (`uv.lock` or `poetry.lock`) to agentlenz backend and SDK for reproducible installs.
-4. **[Testing] Add a dashboard test suite** (Vitest or Jest) to agentlenz — currently only the Python backend is tested.
+1. **[Urgent] Merge `dockwright-macos-agent` PR #1.** It contains a critical unauthenticated LAN RCE fix. Now 65 days old — every day this is unmerged, any device on the user's LAN can execute arbitrary shell commands via the unpatched A2A/MCP servers.
+2. **[Cleanup] Close agentlenz standup PRs #1–#7** (PRs going back to May 2026). They are draft reference docs; merge or close to keep the PR queue meaningful.
+3. **[Cleanup] Delete `claude/temp-meters-dab-pots-lcvi3w`** branch in agentlenz — appears to be an abandoned Claude session branch with no PR.
+4. **[Hygiene] Add a lock file** (`uv.lock` or `poetry.lock`) to agentlenz backend and SDK for reproducible installs.
+5. **[Testing] Add a dashboard test suite** (Vitest or Jest) — only the Python backend is tested.
