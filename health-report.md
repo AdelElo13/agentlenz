@@ -1,6 +1,6 @@
-# Weekly Health Report — 2026-10-05
+# Weekly Health Report — 2026-10-12
 
-Generated: 2026-10-05 | Repos: `adelelo13/agentlenz`, `adelelo13/dockwright-macos-agent`
+Generated: 2026-10-12 | Repos: `adelelo13/agentlenz`, `adelelo13/dockwright-macos-agent`
 
 ---
 
@@ -8,61 +8,62 @@ Generated: 2026-10-05 | Repos: `adelelo13/agentlenz`, `adelelo13/dockwright-maco
 
 ### Stale Branches
 
-11 non-main branches, 10 with open PRs, none merged.
+12 branches total (main + 11 non-main). No branches merged into main and undeleted since last week.
 
-**`claude/temp-meters-dab-pots-lcvi3w`** — merged into `main`, branch still not deleted. Flagged since 2026-09-14 (4+ weeks).
+**`claude/temp-meters-dab-pots-lcvi3w`** — merged into `main`, branch still not deleted. Flagged for 4+ weeks (since ~2026-09-14). Action needed: delete it.
 
-**10 standup branches with open PRs** (one new this week: #11):
+**10 standup branches with open PRs** — none have been merged or closed:
 
-| Branch | PR | Days Open |
-|--------|----|-----------|
-| standup-2026-05-27 | #1 | 131 days |
-| standup-2026-06-16 | #2 | 111 days |
-| standup-2026-06-17 | #3 | 110 days |
-| standup-2026-06-22 | #4 | 105 days |
-| standup-2026-06-29 | #5 | 98 days |
-| standup-2026-07-13 | #6 | 84 days |
-| standup-2026-08-24 | #7 | 42 days |
-| standup-2026-08-31 | #8 | 35 days |
-| standup-2026-09-15 | #10 | 20 days |
-| standup-2026-10-05 | #11 | 0 days (today) |
+| Branch | PR | Age (days) |
+|--------|-----|-----------|
+| standup-2026-05-27 | #1 | 138 |
+| standup-2026-06-16 | #2 | 119 |
+| standup-2026-06-17 | #3 | 118 |
+| standup-2026-06-22 | #4 | 113 |
+| standup-2026-06-29 | #5 | 106 |
+| standup-2026-07-13 | #6 | 92 |
+| standup-2026-08-24 | #7 | 49 |
+| standup-2026-08-31 | #8 | 42 |
+| standup-2026-09-15 | #10 | 27 |
+| standup-2026-10-05 | #11 | 7 |
 
-**Pattern:** Standup branches and their PRs accumulate weekly, never closed. 10 open PRs serve no review purpose. Recommend closing all standup PRs and deleting their branches, or switch to committing standup docs directly to main.
+**1 new standup branch this week:** `standup-2026-10-05` / PR #11 (opened 2026-10-05).
 
 ### Dependency Health
 
-**backend (`pyproject.toml`)** — min-version pins, no pinned exact versions:
-- `fastapi>=0.115`, `uvicorn[standard]>=0.32`, `sqlalchemy[asyncio]>=2.0`, `asyncpg>=0.30`, `alembic>=1.14`, `pydantic>=2.0`, `psycopg2-binary>=2.9`
-- Status: No lockfile in repo. Cannot verify installed vs. latest without running pip. Deps look current as of spec (FastAPI 0.115, SQLAlchemy 2.x are recent stable releases).
+| File | Status |
+|------|--------|
+| `backend/pyproject.toml` | Version ranges (fastapi>=0.115, uvicorn>=0.32, sqlalchemy>=2.0, etc.) — no lock file in repo; no pinned conflicts detected |
+| `sdk/pyproject.toml` | Version ranges (httpx>=0.27, pydantic>=2.0, anthropic>=0.40, openai>=1.50) — clean |
+| `dashboard/package.json` | next@16.2.1, react@19.2.4, @tanstack/react-query@^5.95.1, recharts@^3.8.0 — looks current |
 
-**sdk (`pyproject.toml`)** — minimal deps:
-- `httpx>=0.27`, `pydantic>=2.0`; optional: `anthropic>=0.40`, `openai>=1.50`
-- Status: Healthy. Lightweight and up-to-date spec.
-
-**dashboard (`package.json`)** — Next.js app:
-- `next: 16.2.1`, `react: 19.2.4`, `react-dom: 19.2.4`
-- `@tanstack/react-query: ^5.95.1`, `recharts: ^3.8.0`
-- Status: Healthy. Next.js 16 and React 19 are current.
+No obviously outdated pinned versions detected. No lock files committed (consider adding for reproducible builds).
 
 ### Code Quality
 
-- Python files: **0 TODOs / FIXMEs / HACKs** across 46 files ✓
-- TypeScript/JS files: **0 TODOs / FIXMEs / HACKs** across 8 files ✓
+- **TODO/FIXME/HACK comments:** 0 in Python, 0 in TypeScript/JS — clean
+- **Uncommitted changes:** None
+- **Stashes:** None
+- **Large files (>1MB):** None
 
 ### Test Status
 
-Test suites present in both `backend/tests/` and `sdk/tests/`:
-- **backend tests:** `test_budgets.py`, `test_costs.py`, `test_ingest.py`, `test_pricing.py`, `test_recommender.py`, `test_waste_detector.py`
-- **sdk tests:** `test_budget.py`, `test_client.py`, `test_config.py`, `test_integration.py`, `test_spans.py`, `test_trace.py`, `test_wrapper_anthropic.py`, `test_wrapper_openai.py`
-- Status: Tests exist and are well-structured. (Not executed — no Python env available in this remote session.)
+| Suite | Result |
+|-------|--------|
+| `sdk/tests/` (25 tests) | ✅ 25 passed, 1 skipped |
+| `backend/tests/` (17 tests) | ✅ 17 passed |
+
+Note: Minor atexit warning in SDK test teardown (`RuntimeError: Call agentlenz.init() before using AgentLenz`) — benign, does not affect test outcomes.
 
 ### Git Hygiene
 
-- Working tree: clean ✓
-- Uncommitted changes: none ✓
-- Stashes: none ✓
-- Large files: none detected ✓
-- HEAD state: detached (ephemeral clone, expected)
+- Commits last 7 days: 4
+- Commits last 30 days: 16
+- Active development confirmed
+
+### Summary
+
+Good test coverage and clean code. The persistent backlog of 10 open standup PRs (oldest 138 days) remains the main hygiene concern. The `claude/temp-meters-dab-pots-lcvi3w` branch needs deletion — it has been merged for over a month.
 
 ---
 
@@ -70,52 +71,59 @@ Test suites present in both `backend/tests/` and `sdk/tests/`:
 
 ### Stale Branches
 
-1 non-main branch: **`fix/bug-audit-v1`**
+2 branches: `main` and `fix/bug-audit-v1`.
 
-| Branch | PR | Days Open | Description |
-|--------|----|-----------|-------------|
-| fix/bug-audit-v1 | #1 | **86 days** | "fix: resolve 37 audited bugs + 2 hardening items across Dockwright" |
+**`fix/bug-audit-v1`** — open PR #1 ("fix: resolve 37 audited bugs + 2 hardening items across Dockwright"), opened **93 days ago** (2026-07-11). Not merged, not closed. This PR has been open since July and represents substantial work that hasn't landed.
 
-**This is a concern.** PR #1 has been open since 2026-07-11 with a substantial fix scope (37 bugs). It has not been merged into `main` for 86 days. The branch and main have since diverged — main has 4+ subsequent commits. Either this work should be merged, rebased onto main, or closed if the fixes were applied separately.
+No merged-but-undeleted branches.
 
 ### Dependency Health
 
-- No `Package.swift` or SPM packages — project uses only Apple system frameworks (Swift, SwiftUI, AVFoundation, Speech, Vision, etc.)
-- Status: **Healthy** — no third-party dependency exposure.
-- Bundled ML model assets: `embedding_model.onnx`, `melspectrogram.onnx`, `hey_jarvis_v0.1.onnx` (wake word models, committed to repo)
+No SPM packages declared — project uses Apple frameworks only (as per architecture spec). No external dependency risk.
+
+4 binary assets in `Dockwright/Resources/Models/`:
+- `embedding_model.onnx` (1.3 MB)
+- `hey_jarvis_v0.1.onnx` (1.3 MB)
+- `melspectrogram.onnx` (1.1 MB)
+- `assets/demo.mov` (1.5 MB)
+
+These are intentional bundled assets, not a concern. Total repo size: 8.4 MB.
 
 ### Code Quality
 
-- Swift files: **104 files, 0 TODOs / FIXMEs / HACKs** ✓
-- Coverage spans: App, Core (LLM, Tools, Scheduler, Memory, Channels, Voice, Sensory, Skills, Agent, Goals, Heartbeat), UI, Utilities
+- **TODO/FIXME/HACK comments:** 0 in 104 Swift source files — clean
+- **Deployment target:** macOS 14.0 ✅ (correct per spec)
+- **Uncommitted changes:** None
+- **Stashes:** None
 
 ### Test Status
 
-- No test suite found (no `XCTest` targets, no `Tests/` directory)
-- Status: **No automated tests.** A macOS app of this complexity benefits from at minimum unit tests for the LLM pipeline, tool executor, and cron engine.
+No automated test suite (Xcode unit tests not present or not runnable in CI environment). Build verification requires macOS + Xcode — not available in this environment.
 
 ### Git Hygiene
 
-- Working tree: clean ✓
-- Uncommitted changes: none ✓
-- Stashes: none ✓
-- Large binary files committed to repo:
-  - `assets/demo.mov` (video — should be in Git LFS or external storage)
-  - `Dockwright/Resources/Models/embedding_model.onnx` (~large, ML model)
-  - `Dockwright/Resources/Models/melspectrogram.onnx` (~large, ML model)
-  - `Dockwright/Resources/Models/hey_jarvis_v0.1.onnx` (~large, ML model)
-  - These inflate clone size for all contributors. Consider Git LFS.
+- Commits last 7 days: **0**
+- Commits last 30 days: **0**
+- Last commit: `d6d3f3f chore: update UIAutomationTool` (over 30 days ago)
+- **Development appears stalled**
+
+### Open PR
+
+**PR #1: "fix: resolve 37 audited bugs + 2 hardening items across Dockwright"** — 93 days open, targeting `main`. Needs a decision: merge, close, or rebase and update.
+
+### Summary
+
+No code quality issues, clean dependency profile. Two concerns: (1) development activity has stopped entirely for 30+ days, and (2) PR #1 with 37 bug fixes has been sitting unmerged for 93 days. If active development is resuming, merging or closing this PR should be the first step.
 
 ---
 
-## Summary
+## Cross-Repo Summary
 
-| Repo | Score | Top Issue |
-|------|-------|-----------|
-| agentlenz | ⚠️ Warning | 10 stale standup PRs accumulating weekly; merged branch not deleted |
-| dockwright-macos-agent | ⚠️ Warning | PR #1 (37-bug fix) open 86 days, unmerged; no tests; large binaries in repo |
+| Repo | Health | Tests | TODOs | Open PRs | Commits (7d) |
+|------|--------|-------|-------|----------|--------------|
+| agentlenz | ⚠️ Warning | ✅ 42/43 pass | 0 | 10 open (oldest 138d) | 4 |
+| dockwright-macos-agent | ⚠️ Warning | N/A | 0 | 1 open (93d) | 0 |
 
-### Recommended Actions
-
-1. **agentlenz:** Close all standup PRs (#1–#10) and delete their branches — they are reference docs, not code changes needing review. Delete the merged `claude/temp-meters-dab-pots-lcvi3w` branch.
-2. **dockwright-macos-agent:** Decide fate of PR #1 — merge, close, or rebase onto current `main`. Add at least basic unit tests for core logic. Move large binaries to Git LFS.
+**Key actions:**
+1. **agentlenz**: Delete `claude/temp-meters-dab-pots-lcvi3w` branch. Consider closing or merging the backlog of standup PRs.
+2. **dockwright-macos-agent**: Decide fate of PR #1 (93 days open). Resume development or archive.
