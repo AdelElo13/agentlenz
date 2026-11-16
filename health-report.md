@@ -1,4 +1,4 @@
-# Weekly Health Report — 2026-11-09
+# Weekly Health Report — 2026-11-16
 
 _Generated automatically. Repos checked: `adelelo13/agentlenz`, `adelelo13/dockwright-macos-agent`._
 
@@ -7,19 +7,19 @@ _Generated automatically. Repos checked: `adelelo13/agentlenz`, `adelelo13/dockw
 ## adelelo13/agentlenz — ⚠️ Warning
 
 ### Stale Branches
-No local or remote stale branches (all 12 stale branches from last week's report have been cleaned up — good progress).
+No stale branches. Only `main` exists locally and on remote.
 
 ### Dependency Health
 | Package file | Status |
 |---|---|
-| `backend/pyproject.toml` | Flexible version pins (`>=`). `pydantic` installed at 2.13.5 (latest 2.14.3 — 1 minor behind), `uvicorn` at 0.54.0 (current). `uv.lock` checked in. |
-| `sdk/pyproject.toml` | Flexible pins (`httpx>=0.27`, `pydantic>=2.0`). `uv.lock` checked in. |
-| `dashboard/package.json` | ⚠️ `node_modules` not installed. Two packages have newer versions: `next` 16.2.1 → **16.4.5**, `react`/`react-dom` 19.2.4 → **19.3.1** |
+| `backend/pyproject.toml` | Flexible pins (`>=`). Key packages: `fastapi` 0.162.0, `uvicorn` 0.54.0, `pydantic` **2.14.2** (↑ from 2.13.5 last week — updated ✅), `sqlalchemy` 2.1.6, `alembic` 1.20.1. All current. `uv.lock` checked in. |
+| `sdk/pyproject.toml` | Flexible pins. `httpx` 0.28.1, `anthropic` 2.3.0. `uv.lock` checked in. |
+| `dashboard/package.json` | ⚠️ `next` pinned at **16.2.1**, latest is **16.4.6** (2 patches behind). `react`/`react-dom` at **19.2.4**, latest **19.3.1**. `node_modules` present. `@tanstack/react-query` and `recharts` are current. |
 
 ### Code Quality
 | Metric | Count |
 |---|---|
-| TODO / FIXME / HACK comments (`.py`, `.ts`, `.js`) | **0** |
+| TODO / FIXME / HACK comments (`.py`, `.ts`, `.js`, `.tsx`) | **0** |
 
 ### Test Status
 | Suite | Result |
@@ -27,14 +27,14 @@ No local or remote stale branches (all 12 stale branches from last week's report
 | `sdk` — `uv run --extra dev pytest` | ✅ 25 passed, 1 skipped |
 | `backend` — `uv run --extra dev pytest` | ✅ 17 passed |
 
-> Note: `sdk` teardown raises `RuntimeError: Call agentlenz.init() before using AgentLenz` from an atexit handler — not a test failure but worth investigating.
+> ⚠️ **Recurring issue**: `sdk` teardown raises `RuntimeError: Call agentlenz.init() before using AgentLenz` from an atexit `EventClient.flush` callback — present for 2+ weeks. Not a test failure, but masks real teardown errors. See action items.
 
 ### Git Hygiene
 - Working tree: clean
 - Stashes: none
 - Large files (>1 MB, outside `.git`): none
 - Uncommitted changes: none
-- Activity: **7 commits** in the last 7 days
+- Activity: **6 commits** since 2026-11-09 (standup notes only — no code changes)
 
 ---
 
@@ -56,19 +56,20 @@ No stale or unmerged branches beyond `main`.
 ### Test Status
 | Suite | Result |
 |---|---|
-| `xcodebuild test` | ⚠️ Not run — macOS build environment not available in this Linux CI context |
+| `xcodebuild test` | ⚠️ Not run — macOS build environment unavailable in this Linux CI context |
+| Swift files | 104 `.swift` files across App/, Core/, UI/, Utilities/ |
 
 ### Git Hygiene
 - Working tree: clean
 - Stashes: none
 - Uncommitted changes: none
-- Activity: **7 commits** in the last 7 days
+- Activity: **0 new commits** since 2026-11-09 (quiet week)
 - Large files (>1 MB, expected binary assets):
-  - `assets/demo.mov` — 1.5 MB demo video
+  - `assets/demo.mov` — demo video
   - `Dockwright/Resources/Models/embedding_model.onnx` — 1.3 MB ML model
-  - `Dockwright/Resources/Models/hey_jarvis_v0.1.onnx` — 1.3 MB wake word model
   - `Dockwright/Resources/Models/melspectrogram.onnx` — 1.1 MB ML model
-  - Consider moving these to Git LFS if the repo grows further
+  - `Dockwright/Resources/Models/hey_jarvis_v0.1.onnx` — 1.3 MB wake word model
+  - Consider Git LFS if repo grows
 
 ---
 
@@ -76,11 +77,15 @@ No stale or unmerged branches beyond `main`.
 
 | Repo | Health | Branches | Tests | Deps | Notes |
 |---|---|---|---|---|---|
-| agentlenz | ⚠️ Warning | ✅ All clean | ✅ 42 passed | ⚠️ Dashboard `next`/`react` behind | Bump `next` → 16.4.5, `react` → 19.3.1 |
-| dockwright-macos-agent | ✅ Healthy | ✅ Clean | N/A (macOS only) | ✅ No external deps | Consider Git LFS for binary models |
+| agentlenz | ⚠️ Warning | ✅ Clean | ✅ 42 passed | ⚠️ Dashboard `next`/`react` still behind | `pydantic` updated ✅; atexit error persists |
+| dockwright-macos-agent | ✅ Healthy | ✅ Clean | N/A (macOS only) | ✅ No external deps | Quiet week; consider Git LFS for `.onnx` files |
+
+### Changes Since Last Week
+- ✅ `agentlenz/backend`: `pydantic` bumped from 2.13.5 → 2.14.2
+- ⚠️ `agentlenz/dashboard`: `next` latest moved from 16.4.5 → 16.4.6 (further behind)
+- ⚠️ SDK atexit `RuntimeError` still unresolved (week 3)
 
 ### Action Items
-1. **agentlenz/dashboard**: Run `npm install` and bump `next` to 16.4.5 and `react`/`react-dom` to 19.3.1 in `package.json`.
-2. **agentlenz/sdk**: Investigate atexit `RuntimeError` from `EventClient.flush` — triggered in test teardown even when `agentlenz.init()` was never called; may suppress real errors.
-3. **agentlenz/backend**: `pydantic` is 1 minor behind (2.13.5 installed, 2.14.3 available); update `uv.lock` when convenient.
-4. **dockwright-macos-agent**: Evaluate Git LFS for the three `.onnx` model files (~3.7 MB total) before the repo grows larger.
+1. **agentlenz/dashboard** (overdue): Bump `next` to 16.4.6 and `react`/`react-dom` to 19.3.1 in `package.json`.
+2. **agentlenz/sdk** (week 3): Fix atexit `RuntimeError` — guard `flush()` with `if not _config_initialized(): return` to prevent noise that could suppress real teardown errors.
+3. **dockwright-macos-agent**: Evaluate Git LFS for the three `.onnx` model files (~3.7 MB total).
